@@ -4,10 +4,12 @@ This is a design prototype to establish the interface layout before full impleme
 """
 
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, filedialog, messagebox
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
+import json
+import os
 
 
 class SimulationExplorerUI:
@@ -34,6 +36,11 @@ class SimulationExplorerUI:
         self.single_baseline_var = tk.StringVar()  # For single dataset baseline
         self.row_baseline_var = tk.StringVar()     # For row baseline
         self.column_baseline_var = tk.StringVar()  # For column baseline
+        
+        # Data storage
+        self.project_data = None  # Will store loaded project JSON
+        self.simulation_data = {}  # Will store all loaded simulation data {(row,col): data}
+        self.current_project_path = None
         
         self.setup_ui()
     
@@ -288,7 +295,7 @@ class SimulationExplorerUI:
                 start_col = 1 + (sim_idx * 3)
                 
                 # Column 1: Execution time (white text)
-                exec_time = self.get_mock_execution_time(threads, sims)
+                exec_time = self.get_real_execution_time(row_idx, sim_idx)
                 time_label = ttk.Label(self.table_frame, text=f"{exec_time:.1f}s",
                                      font=('TkDefaultFont', 9), foreground='white',
                                      background='black', relief='solid', borderwidth=1)
@@ -322,6 +329,11 @@ class SimulationExplorerUI:
         
         button_frame = ttk.Frame(parent)
         button_frame.grid(row=3, column=0, pady=(10, 0), sticky=tk.W)
+        
+        # Load project data button (prominent)
+        load_btn = ttk.Button(button_frame, text="Load Project Data", 
+                             command=self.load_project_file)
+        load_btn.pack(side=tk.LEFT, padx=(0, 15))
         
         # Update chart button
         ttk.Button(button_frame, text="Update Chart", 
@@ -359,11 +371,124 @@ class SimulationExplorerUI:
                        command=self.update_comparison_mode).pack(side=tk.LEFT)
         
         # Status label
-        self.status_label = ttk.Label(button_frame, text="Ready")
+        self.status_label = ttk.Label(button_frame, text="Ready - Load project data to begin")
         self.status_label.pack(side=tk.RIGHT)
     
     def create_demo_chart(self):
-        """Create a demo chart to show the concept"""
+        """Create a chart with real or demo data based on what's loaded"""
+        
+        if self.simulation_data:
+            self.create_real_data_chart()
+        else:
+            self.create_mock_data_chart()
+    
+    def create_real_data_chart(self):
+        """Create chart using real loaded simulation data"""
+        
+        # Get selected datasets
+        selected_datasets = []
+        baseline_data = None
+        
+        for (row_idx, col_idx), var in self.dataset_selections.items():
+            if var.get() and (row_idx, col_idx) in self.simulation_data:
+                data = self.simulation_data[(row_idx, col_idx)]
+                threads = self.thread_counts[row_idx]
+                sims = self.concurrent_sims[col_idx]
+                selected_datasets.append({
+                    'name': f"{sims} sim{'s' if sims > 1 else ''}, {threads} thread{'s' if threads > 1 else ''}",
+                    'data': data,
+                    'threads': threads,
+                    'sims': sims,
+                    'coords': (row_idx, col_idx)
+                })
+        
+        if not selected_datasets:
+            self.ax.clear()
+            self.ax.text(0.5, 0.5, 'No datasets selected or loaded.\nLoad project data and select datasets to visualize.',
+                        ha='center', va='center', transform=self.ax.transAxes, fontsize=12)
+            self.canvas.draw()
+            return
+        
+        # Get baseline data based on current mode
+        baseline_data = self.get_baseline_data()
+        
+        if not baseline_data:
+            self.ax.clear()
+            self.ax.text(0.5, 0.5, 'Baseline data not available.\nPlease select a valid baseline.',
+                        ha='center', va='center', transform=self.ax.transAxes, fontsize=12)
+            self.canvas.draw()
+            return
+        
+        # Extract function names from the first dataset
+        baseline_functions = baseline_data.get('functions', {})
+        if not baseline_functions:
+            self.ax.clear()
+            self.ax.text(0.5, 0.5, 'No function data available in baseline.',
+                        ha='center', va='center', transform=self.ax.transAxes, fontsize=12)
+            self.canvas.draw()
+            return
+        
+        function_names = list(baseline_functions.keys())
+        
+        self.ax.clear()
+        
+        # Create performance ratios for each dataset
+        bar_width = 0.8
+        x = np.arange(len(function_names))
+        colors = ['blue', 'green', 'red', 'orange', 'purple', 'brown', 'pink', 'gray', 'olive', 'cyan']
+        
+        for i, dataset in enumerate(selected_datasets):
+            ratios = []
+            dataset_functions = dataset['data'].get('functions', {})
+            
+            for func_name in function_names:
+                baseline_time = baseline_functions[func_name]['total_time']
+                if func_name in dataset_functions and baseline_time > 0:
+                    dataset_time = dataset_functions[func_name]['total_time']
+                    ratio = dataset_time / baseline_time
+                else:
+                    ratio = 1.0  # Default if function missing
+                ratios.append(ratio)
+            
+            # Plot bars for this dataset
+            self.ax.bar(x, ratios, bar_width, 
+                       alpha=0.7, 
+                       color=colors[i % len(colors)],
+                       label=dataset['name'])
+        
+        # Add baseline reference line
+        self.ax.axhline(y=1.0, color='black', linestyle='--', alpha=0.8, linewidth=2, label='Baseline')
+        
+        # Formatting
+        self.ax.set_ylabel('Performance Ratio (Normalized to Baseline)')
+        self.ax.set_title('EnergyPlus Function Performance Comparison')
+        self.ax.set_xticks(x)
+        
+        # Toggle function labels based on user preference
+        if self.show_function_labels.get():
+            # Abbreviate long function names for better display
+            abbreviated_names = [self.abbreviate_function_name(name) for name in function_names]
+            self.ax.set_xticklabels(abbreviated_names, rotation=45, ha='right')
+            self.ax.set_xlabel('Functions')
+            # Adjust margins for rotated labels
+            self.figure.subplots_adjust(left=0.08, right=0.98, top=0.95, bottom=0.25)
+        else:
+            self.ax.set_xticklabels([''] * len(function_names))
+            self.ax.set_xlabel('')
+            self.figure.subplots_adjust(left=0.08, right=0.98, top=0.95, bottom=0.05)
+        
+        # Add legend
+        self.ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+        self.ax.grid(True, alpha=0.3)
+        
+        # Store function names for hover functionality
+        self.function_names = function_names
+        self.dataset_names = [d['name'] for d in selected_datasets]
+        
+        self.canvas.draw()
+    
+    def create_mock_data_chart(self):
+        """Create demo chart when no real data is loaded"""
         
         # Demo data for visualization concept
         functions = ['Function A', 'Function B', 'Function C', 'Function D', 'Function E']
@@ -394,7 +519,7 @@ class SimulationExplorerUI:
         
         # Formatting with conditional function labels
         self.ax.set_ylabel('Performance Ratio (Normalized to Baseline)')
-        self.ax.set_title('Overlaid Performance Comparison - Demo Chart')
+        self.ax.set_title('Overlaid Performance Comparison - Demo Chart (Load data for real analysis)')
         self.ax.set_xticks(x)
         
         # Toggle function labels based on user preference
@@ -417,6 +542,61 @@ class SimulationExplorerUI:
         self.dataset_names = [d['name'] for d in datasets]
         
         self.canvas.draw()
+    
+    def get_baseline_data(self):
+        """Get baseline data based on current baseline mode"""
+        
+        mode = self.baseline_mode.get()
+        
+        if mode == "single":
+            baseline_key = self.single_baseline_var.get()
+            if baseline_key and '_' in baseline_key:
+                baseline_row, baseline_col = map(int, baseline_key.split('_'))
+                return self.simulation_data.get((baseline_row, baseline_col))
+        elif mode == "row":
+            baseline_row = int(self.row_baseline_var.get()) if self.row_baseline_var.get() else 0
+            # Use first column as baseline for row comparison
+            return self.simulation_data.get((baseline_row, 0))
+        elif mode == "column":
+            baseline_col = int(self.column_baseline_var.get()) if self.column_baseline_var.get() else 0
+            # Use first row as baseline for column comparison
+            return self.simulation_data.get((0, baseline_col))
+        
+        # Fallback: try to get any available data as baseline
+        if self.simulation_data:
+            return list(self.simulation_data.values())[0]
+        
+        return None
+    
+    def abbreviate_function_name(self, name):
+        """Abbreviate long function names for better chart display"""
+        if len(name) <= 20:
+            return name
+        
+        # Common abbreviations for EnergyPlus functions
+        abbreviations = {
+            'SimulateHVAC': 'HVAC',
+            'CalcAirLoopSplitter': 'AirSplit',
+            'SimulateAirLoopComponents': 'AirComp',
+            'UpdateZoneInletConvergenceLog': 'ZoneConv',
+            'CalcMundtModel': 'Mundt',
+            'SimulateWaterCoilComponents': 'WaterCoil',
+            'GetZoneAirDistribution': 'ZoneAir',
+            'SimulateAirZonePlenum': 'Plenum',
+            'CalcHeatBalanceInsideSurf': 'HeatBalIn',
+            'CalcUserDefinedInsideHVACPlant': 'UserHVAC',
+            'ReportAirHeatBalance': 'AirHeatRpt',
+            'ReportZoneMeanAirTemp': 'ZoneTempRpt',
+            'ManageSystemAvailability': 'SysAvail',
+            'InitLoadDistribution': 'LoadInit',
+            'CalcWindowScreenThermal': 'WinScreen',
+            'CalcAirSystem': 'AirSys',
+            'CalcComplexWindowThermal': 'ComplexWin',
+            'ReportSysSizing': 'SysSizeRpt',
+            'CalcHeatBalanceOutsideSurf': 'HeatBalOut'
+        }
+        
+        return abbreviations.get(name, name[:15] + '...')
     
     def create_statistics_panel(self, parent):
         """Create the statistics panel on the right side"""
@@ -563,6 +743,9 @@ class SimulationExplorerUI:
         selected_datasets = sum(1 for var in self.dataset_selections.values() if var.get())
         baseline_mode = self.baseline_mode.get()
         
+        # Check if we have real data
+        using_real_data = bool(self.simulation_data)
+        
         # Get baseline information based on current mode
         if baseline_mode == "single":
             baseline_key = self.single_baseline_var.get()
@@ -584,6 +767,15 @@ class SimulationExplorerUI:
             baseline_threads, baseline_sims = 1, 1
         
         stats_text = f"PERFORMANCE ANALYSIS\n{'='*25}\n\n"
+        
+        if using_real_data:
+            project_name = self.project_data.get('project_info', {}).get('name', 'Unknown Project') if self.project_data else 'Unknown'
+            stats_text += f"Project: {project_name}\n"
+            stats_text += f"Loaded Datasets: {len(self.simulation_data)} of 42\n"
+        else:
+            stats_text += "Data Source: Mock/Demo Data\n"
+            stats_text += "(Load real project data for actual analysis)\n"
+        
         stats_text += f"Selected Datasets: {selected_datasets}\n"
         stats_text += f"Baseline: {baseline_threads} threads, {baseline_sims} sims\n"
         stats_text += f"Comparison Mode: {baseline_mode.capitalize()}\n\n"
@@ -604,50 +796,146 @@ class SimulationExplorerUI:
                 stats_text += f"• {func}\n"
             stats_text += "\n"
         
-        if selected_datasets == 1:
+        if using_real_data and selected_datasets > 0:
+            # Analyze real data
+            selected_coords = [(row, col) for (row, col), var in self.dataset_selections.items() if var.get()]
+            available_data = [(row, col) for row, col in selected_coords if (row, col) in self.simulation_data]
+            
+            if available_data:
+                stats_text += self.analyze_real_data(available_data, baseline_mode)
+            else:
+                stats_text += "No data available for selected datasets.\n"
+                stats_text += "Selected datasets may not be loaded yet.\n"
+        
+        elif selected_datasets == 1:
             stats_text += "SINGLE DATASET ANALYSIS\n"
             stats_text += "-" * 25 + "\n"
-            stats_text += "Dataset Context:\n"
-            stats_text += "• Total simulation time: 156.1s\n"
-            stats_text += "• Performance ratio: 0.40x\n"
-            stats_text += "• Memory usage: 2.1 GB\n"
-            stats_text += "• CPU utilization: 95%\n"
-            stats_text += "• Resource contention: Low\n\n"
+            if using_real_data:
+                stats_text += "Real dataset analysis will appear here\n"
+                stats_text += "when single dataset is selected.\n"
+            else:
+                stats_text += "Dataset Context (Mock Data):\n"
+                stats_text += "• Total simulation time: 156.1s\n"
+                stats_text += "• Performance ratio: 0.40x\n"
+                stats_text += "• Memory usage: 2.1 GB\n"
+                stats_text += "• CPU utilization: 95%\n"
+                stats_text += "• Resource contention: Low\n\n"
             
             if self.selected_functions:
                 stats_text += "Function-Specific Metrics:\n"
                 for func in sorted(self.selected_functions):
-                    stats_text += f"• {func}: 1.2x baseline\n"
+                    stats_text += f"• {func}: 1.2x baseline (estimated)\n"
             
         elif selected_datasets > 1:
             stats_text += "MULTI-DATASET COMPARISON\n"
             stats_text += "-" * 27 + "\n"
-            stats_text += "Performance Statistics:\n"
-            stats_text += "• Best performance: 0.40x (8 threads, 1 sim)\n"
-            stats_text += "• Worst performance: 2.73x (1 thread, 8 sims)\n"
-            stats_text += "• Average performance: 1.15x\n"
-            stats_text += "• Standard deviation: 0.89x\n\n"
-            
-            stats_text += "Threading Effects:\n"
-            stats_text += "• Optimal thread count: 8-16\n"
-            stats_text += "• Diminishing returns: >16 threads\n"
-            stats_text += "• Context switching penalty: High at 32 threads\n\n"
-            
-            stats_text += "Concurrency Effects:\n"
-            stats_text += "• Resource contention starts: >4 sims\n"
-            stats_text += "• Memory pressure: Severe at >16 sims\n"
-            stats_text += "• I/O bottlenecks: Critical at >32 sims\n\n"
+            if using_real_data:
+                stats_text += "Multi-dataset analysis will appear here\n"
+                stats_text += "when multiple datasets are selected.\n"
+            else:
+                stats_text += "Performance Statistics (Mock Data):\n"
+                stats_text += "• Best performance: 0.40x (8 threads, 1 sim)\n"
+                stats_text += "• Worst performance: 2.73x (1 thread, 8 sims)\n"
+                stats_text += "• Average performance: 1.15x\n"
+                stats_text += "• Standard deviation: 0.89x\n\n"
+                
+                stats_text += "Threading Effects:\n"
+                stats_text += "• Optimal thread count: 8-16\n"
+                stats_text += "• Diminishing returns: >16 threads\n"
+                stats_text += "• Context switching penalty: High at 32 threads\n\n"
+                
+                stats_text += "Concurrency Effects:\n"
+                stats_text += "• Resource contention starts: >4 sims\n"
+                stats_text += "• Memory pressure: Severe at >16 sims\n"
+                stats_text += "• I/O bottlenecks: Critical at >32 sims\n\n"
             
             if self.selected_functions:
                 stats_text += "Function Performance Ranges:\n"
                 for func in sorted(self.selected_functions):
-                    stats_text += f"• {func}: 0.6x - 2.8x range\n"
+                    stats_text += f"• {func}: 0.6x - 2.8x range (estimated)\n"
         
         else:
             stats_text += "No datasets selected.\n"
             stats_text += "Select datasets from the matrix below to see analysis."
         
         self.stats_text.insert(1.0, stats_text)
+    
+    def analyze_real_data(self, selected_coords, baseline_mode):
+        """Analyze real data for selected coordinates"""
+        
+        analysis = "REAL DATA ANALYSIS\n" + "-" * 20 + "\n"
+        
+        # Get baseline data for comparison
+        baseline_data = self.get_baseline_data()
+        if not baseline_data:
+            return analysis + "Baseline data not available for comparison.\n"
+        
+        # Collect performance data
+        performance_times = []
+        memory_usages = []
+        cpu_utilizations = []
+        
+        for row, col in selected_coords:
+            if (row, col) in self.simulation_data:
+                data = self.simulation_data[(row, col)]
+                metadata = data.get('metadata', {})
+                
+                # Collect metrics
+                total_time = metadata.get('total_simulation_time', 0)
+                memory_gb = metadata.get('system_conditions', {}).get('estimated_memory_usage_gb', 0)
+                cpu_percent = metadata.get('system_conditions', {}).get('cpu_utilization_percent', 0)
+                
+                performance_times.append(total_time)
+                memory_usages.append(memory_gb)
+                cpu_utilizations.append(cpu_percent)
+        
+        if performance_times:
+            # Calculate statistics
+            min_time = min(performance_times)
+            max_time = max(performance_times)
+            avg_time = sum(performance_times) / len(performance_times)
+            
+            baseline_time = baseline_data.get('metadata', {}).get('total_simulation_time', 1)
+            min_ratio = min_time / baseline_time if baseline_time > 0 else 0
+            max_ratio = max_time / baseline_time if baseline_time > 0 else 0
+            avg_ratio = avg_time / baseline_time if baseline_time > 0 else 0
+            
+            analysis += f"Performance Overview:\n"
+            analysis += f"• Datasets analyzed: {len(selected_coords)}\n"
+            analysis += f"• Best performance: {min_time:.1f}s ({min_ratio:.2f}x baseline)\n"
+            analysis += f"• Worst performance: {max_time:.1f}s ({max_ratio:.2f}x baseline)\n"
+            analysis += f"• Average performance: {avg_time:.1f}s ({avg_ratio:.2f}x baseline)\n\n"
+            
+            if memory_usages:
+                analysis += f"System Resource Usage:\n"
+                analysis += f"• Memory range: {min(memory_usages):.1f} - {max(memory_usages):.1f} GB\n"
+                analysis += f"• CPU utilization: {min(cpu_utilizations)} - {max(cpu_utilizations)}%\n\n"
+            
+            # Function-level analysis if functions are selected
+            if self.selected_functions and baseline_data.get('functions'):
+                analysis += "Selected Function Performance:\n"
+                baseline_functions = baseline_data.get('functions', {})
+                
+                for func in sorted(self.selected_functions):
+                    if func in baseline_functions:
+                        baseline_func_time = baseline_functions[func]['total_time']
+                        func_ratios = []
+                        
+                        for row, col in selected_coords:
+                            if (row, col) in self.simulation_data:
+                                data = self.simulation_data[(row, col)]
+                                functions = data.get('functions', {})
+                                if func in functions and baseline_func_time > 0:
+                                    func_time = functions[func]['total_time']
+                                    ratio = func_time / baseline_func_time
+                                    func_ratios.append(ratio)
+                        
+                        if func_ratios:
+                            min_func_ratio = min(func_ratios)
+                            max_func_ratio = max(func_ratios)
+                            analysis += f"• {func}: {min_func_ratio:.2f}x - {max_func_ratio:.2f}x\n"
+        
+        return analysis
     
     def toggle_stats_panel(self):
         """Show/hide the statistics panel"""
@@ -672,6 +960,128 @@ class SimulationExplorerUI:
         self.dataset_selections[(2, 2)].set(True)  # 4 sims, 4 threads
         
         self.update_status()
+    
+    def load_project_file(self):
+        """Load a project JSON file that references all simulation data files"""
+        
+        # Ask user to select project file
+        project_path = filedialog.askopenfilename(
+            title="Select EnergyPlus Project File",
+            filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
+            initialdir=os.getcwd()
+        )
+        
+        if not project_path:
+            return
+        
+        try:
+            # Load project JSON
+            with open(project_path, 'r') as f:
+                self.project_data = json.load(f)
+            
+            self.current_project_path = project_path
+            project_dir = os.path.dirname(project_path)
+            
+            # Validate project structure
+            if 'datasets' not in self.project_data:
+                messagebox.showerror("Error", "Invalid project file: missing 'datasets' section")
+                return
+            
+            # Load all simulation data files
+            self.simulation_data = {}
+            missing_files = []
+            
+            for sim_count, thread_data in self.project_data['datasets'].items():
+                for thread_count, filename in thread_data.items():
+                    # Construct full path
+                    file_path = os.path.join(project_dir, filename)
+                    
+                    if os.path.exists(file_path):
+                        try:
+                            with open(file_path, 'r') as f:
+                                data = json.load(f)
+                            
+                            # Map to matrix coordinates
+                            sim_idx = self.get_sim_index(sim_count)
+                            thread_idx = self.get_thread_index(thread_count)
+                            
+                            if sim_idx is not None and thread_idx is not None:
+                                self.simulation_data[(thread_idx, sim_idx)] = data
+                        
+                        except json.JSONDecodeError as e:
+                            messagebox.showerror("Error", f"Invalid JSON in {filename}: {e}")
+                            return
+                    else:
+                        missing_files.append(filename)
+            
+            if missing_files:
+                messagebox.showwarning("Warning", 
+                    f"Some data files not found:\n" + "\n".join(missing_files[:10]) + 
+                    (f"\n... and {len(missing_files) - 10} more" if len(missing_files) > 10 else ""))
+            
+            # Update the UI with real data
+            self.update_table_with_real_data()
+            self.update_status()
+            
+            # Show success message
+            project_name = self.project_data.get('project_info', {}).get('name', 'Unknown Project')
+            loaded_count = len(self.simulation_data)
+            messagebox.showinfo("Success", 
+                f"Loaded project: {project_name}\n{loaded_count} datasets loaded successfully")
+        
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to load project file: {e}")
+    
+    def get_sim_index(self, sim_key):
+        """Convert sim key from project file to index in concurrent_sims array"""
+        sim_map = {
+            "1_sim": 0, "2_sims": 1, "4_sims": 2, "8_sims": 3, 
+            "16_sims": 4, "32_sims": 5, "64_sims": 6
+        }
+        return sim_map.get(sim_key)
+    
+    def get_thread_index(self, thread_key):
+        """Convert thread key from project file to index in thread_counts array"""
+        thread_map = {
+            "1_thread": 0, "2_threads": 1, "4_threads": 2, 
+            "8_threads": 3, "16_threads": 4, "32_threads": 5
+        }
+        return thread_map.get(thread_key)
+    
+    def update_table_with_real_data(self):
+        """Update the table display with real execution times from loaded data"""
+        
+        if not self.simulation_data:
+            return
+        
+        # Update time labels in the table
+        for (thread_idx, sim_idx), data in self.simulation_data.items():
+            if hasattr(self, 'table_frame'):
+                # Find the time label for this position
+                table_row = thread_idx + 2  # Account for header rows
+                start_col = 1 + (sim_idx * 3)  # Time column
+                
+                # Get real execution time from data
+                total_time = data.get('metadata', {}).get('total_simulation_time', 0)
+                
+                # Find and update the time label
+                for widget in self.table_frame.grid_slaves():
+                    info = widget.grid_info()
+                    if info['row'] == table_row and info['column'] == start_col:
+                        if isinstance(widget, ttk.Label):
+                            widget.config(text=f"{total_time:.1f}s")
+                        break
+    
+    def get_real_execution_time(self, thread_idx, sim_idx):
+        """Get real execution time from loaded data, fallback to mock if not available"""
+        
+        if (thread_idx, sim_idx) in self.simulation_data:
+            return self.simulation_data[(thread_idx, sim_idx)].get('metadata', {}).get('total_simulation_time', 0)
+        else:
+            # Fallback to mock data
+            threads = self.thread_counts[thread_idx]
+            sims = self.concurrent_sims[sim_idx]
+            return self.get_mock_execution_time(threads, sims)
     
     def on_selection_change(self, row, col):
         """Handle checkbox selection changes"""
@@ -719,6 +1129,9 @@ class SimulationExplorerUI:
         selected_count = sum(1 for var in self.dataset_selections.values() if var.get())
         mode = self.baseline_mode.get()
         
+        # Check if real data is loaded
+        data_status = f"Real data: {len(self.simulation_data)} datasets" if self.simulation_data else "Mock data"
+        
         # Get baseline information based on current mode
         if mode == "single":
             baseline_key = self.single_baseline_var.get()
@@ -740,7 +1153,7 @@ class SimulationExplorerUI:
         else:
             baseline_info = "Unknown mode"
         
-        self.status_label.config(text=f"Selected: {selected_count} datasets | Baseline ({mode}): {baseline_info}")
+        self.status_label.config(text=f"{data_status} | Selected: {selected_count} | Baseline ({mode}): {baseline_info}")
     
     def get_mock_execution_time(self, threads, sims):
         """Generate mock execution time based on threading and simulation parameters"""

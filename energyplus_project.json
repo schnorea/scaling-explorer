@@ -1,0 +1,89 @@
+{
+  "project_info": {
+    "name": "EnergyPlus Concurrent Simulation Performance Analysis",
+    "description": "Performance profiling data for EnergyPlus simulations with varying concurrency and threading configurations",
+    "version": "1.0",
+    "created_date": "2025-10-18",
+    "building_type": "Commercial Office",
+    "climate_zone": "4A",
+    "simulation_period": "Annual"
+  },
+  "datasets": {
+    "1_sim": {
+      "1_thread": "energyplus_concurrent_01sims_01threads.json",
+      "2_threads": "energyplus_concurrent_01sims_02threads.json",
+      "4_threads": "energyplus_concurrent_01sims_04threads.json",
+      "8_threads": "energyplus_concurrent_01sims_08threads.json",
+      "16_threads": "energyplus_concurrent_01sims_16threads.json",
+      "32_threads": "energyplus_concurrent_01sims_32threads.json"
+    },
+    "2_sims": {
+      "1_thread": "energyplus_concurrent_02sims_01threads.json",
+      "2_threads": "energyplus_concurrent_02sims_02threads.json",
+      "4_threads": "energyplus_concurrent_02sims_04threads.json",
+      "8_threads": "energyplus_concurrent_02sims_08threads.json",
+      "16_threads": "energyplus_concurrent_02sims_16threads.json",
+      "32_threads": "energyplus_concurrent_02sims_32threads.json"
+    },
+    "4_sims": {
+      "1_thread": "energyplus_concurrent_04sims_01threads.json",
+      "2_threads": "energyplus_concurrent_04sims_02threads.json",
+      "4_threads": "energyplus_concurrent_04sims_04threads.json",
+      "8_threads": "energyplus_concurrent_04sims_08threads.json",
+      "16_threads": "energyplus_concurrent_04sims_16threads.json",
+      "32_threads": "energyplus_concurrent_04sims_32threads.json"
+    },
+    "8_sims": {
+      "1_thread": "energyplus_concurrent_08sims_01threads.json",
+      "2_threads": "energyplus_concurrent_08sims_02threads.json",
+      "4_threads": "energyplus_concurrent_08sims_04threads.json",
+      "8_threads": "energyplus_concurrent_08sims_08threads.json",
+      "16_threads": "energyplus_concurrent_08sims_16threads.json",
+      "32_threads": "energyplus_concurrent_08sims_32threads.json"
+    },
+    "16_sims": {
+      "1_thread": "energyplus_concurrent_16sims_01threads.json",
+      "2_threads": "energyplus_concurrent_16sims_02threads.json",
+      "4_threads": "energyplus_concurrent_16sims_04threads.json",
+      "8_threads": "energyplus_concurrent_16sims_08threads.json",
+      "16_threads": "energyplus_concurrent_16sims_16threads.json",
+      "32_threads": "energyplus_concurrent_16sims_32threads.json"
+    },
+    "32_sims": {
+      "1_thread": "energyplus_concurrent_32sims_01threads.json",
+      "2_threads": "energyplus_concurrent_32sims_02threads.json",
+      "4_threads": "energyplus_concurrent_32sims_04threads.json",
+      "8_threads": "energyplus_concurrent_32sims_08threads.json",
+      "16_threads": "energyplus_concurrent_32sims_16threads.json",
+      "32_threads": "energyplus_concurrent_32sims_32threads.json"
+    },
+    "64_sims": {
+      "1_thread": "energyplus_concurrent_64sims_01threads.json",
+      "2_threads": "energyplus_concurrent_64sims_02threads.json",
+      "4_threads": "energyplus_concurrent_64sims_04threads.json",
+      "8_threads": "energyplus_concurrent_64sims_08threads.json",
+      "16_threads": "energyplus_concurrent_64sims_16threads.json",
+      "32_threads": "energyplus_concurrent_64sims_32threads.json"
+    }
+  },
+  "matrix_layout": {
+    "rows": ["1_sim", "2_sims", "4_sims", "8_sims", "16_sims", "32_sims", "64_sims"],
+    "columns": ["1_thread", "2_threads", "4_threads", "8_threads", "16_threads", "32_threads"]
+  },
+  "data_format": {
+    "structure": "Each dataset contains metadata and function performance data",
+    "functions_tracked": [
+      "SimulateHVAC", "CalcAirLoopSplitter", "SimulateAirLoopComponents",
+      "UpdateZoneInletConvergenceLog", "CalcMundtModel", "SimulateWaterCoilComponents",
+      "GetZoneAirDistribution", "SimulateAirZonePlenum", "CalcHeatBalanceInsideSurf",
+      "CalcUserDefinedInsideHVACPlant", "ReportAirHeatBalance", "ReportZoneMeanAirTemp",
+      "ManageSystemAvailability", "InitLoadDistribution", "CalcAirLoopSplitter",
+      "CalcWindowScreenThermal", "CalcAirSystem", "CalcComplexWindowThermal",
+      "ReportSysSizing", "CalcHeatBalanceOutsideSurf"
+    ],
+    "metrics_per_function": [
+      "total_time", "call_count", "avg_time_per_call", 
+      "min_time", "max_time", "std_deviation", "percentage_of_total"
+    ]
+  }
+}
