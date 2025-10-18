@@ -1,0 +1,839 @@
+{
+  "metadata": {
+    "building_type": "Commercial Office",
+    "climate_zone": "4A",
+    "simulation_period": "Annual",
+    "timestep": "4 per hour",
+    "total_simulation_time": 1254.052493,
+    "system_conditions": {
+      "memory_pressure": "High",
+      "concurrent_applications": [
+        "Chrome (2.1GB)",
+        "Docker (1.8GB)",
+        "IntelliJ IDEA (1.2GB)",
+        "Slack (450MB)"
+      ],
+      "available_memory": "1.2GB of 16GB",
+      "swap_activity": "Heavy (2.3GB active)",
+      "cache_hit_ratio": "64%",
+      "page_faults_per_second": 1250,
+      "context_switches_per_second": 8900
+    }
+  },
+  "timestamp": "2025-10-17T12:06:09.613367",
+  "functions": {
+    "SimulateHVAC": {
+      "total_time": 127.62884,
+      "call_count": 842,
+      "avg_time_per_call": 0.151578,
+      "min_time": 0.025954,
+      "max_time": 2.006177,
+      "std_deviation": 0.046746,
+      "percentage_of_total": 10.18,
+      "contention_metrics": {
+        "baseline_time": 45.2,
+        "contention_factor": 2.8,
+        "performance_degradation_percent": 180.0,
+        "variability_increase_factor": 3.2
+      }
+    },
+    "CalcAirLoopSplitter": {
+      "total_time": 4.311125,
+      "call_count": 1147,
+      "avg_time_per_call": 0.003759,
+      "min_time": 0.001,
+      "max_time": 0.070041,
+      "std_deviation": 0.001221,
+      "percentage_of_total": 0.34,
+      "contention_metrics": {
+        "baseline_time": 2.1,
+        "contention_factor": 2.1,
+        "performance_degradation_percent": 110.0,
+        "variability_increase_factor": 2.8
+      }
+    },
+    "SimulateAirLoopComponents": {
+      "total_time": 49.390099,
+      "call_count": 952,
+      "avg_time_per_call": 0.05188,
+      "min_time": 0.017143,
+      "max_time": 0.378838,
+      "std_deviation": 0.013676,
+      "percentage_of_total": 3.94,
+      "contention_metrics": {
+        "baseline_time": 18.7,
+        "contention_factor": 2.6,
+        "performance_degradation_percent": 160.0,
+        "variability_increase_factor": 3.1
+      }
+    },
+    "CalcFanSystemTemperatures": {
+      "total_time": 8.0211,
+      "call_count": 1096,
+      "avg_time_per_call": 0.007319,
+      "min_time": 0.002562,
+      "max_time": 0.08807,
+      "std_deviation": 0.002117,
+      "percentage_of_total": 0.64,
+      "contention_metrics": {
+        "baseline_time": 3.4,
+        "contention_factor": 2.3,
+        "performance_degradation_percent": 130.0,
+        "variability_increase_factor": 2.9
+      }
+    },
+    "SimulateCoils": {
+      "total_time": 19.945009,
+      "call_count": 992,
+      "avg_time_per_call": 0.020106,
+      "min_time": 0.005632,
+      "max_time": 0.284644,
+      "std_deviation": 0.006351,
+      "percentage_of_total": 1.59,
+      "contention_metrics": {
+        "baseline_time": 8.9,
+        "contention_factor": 2.4,
+        "performance_degradation_percent": 140.0,
+        "variability_increase_factor": 3.0
+      }
+    },
+    "CalcCoolingCoil": {
+      "total_time": 10.566297,
+      "call_count": 876,
+      "avg_time_per_call": 0.012062,
+      "min_time": 0.004494,
+      "max_time": 0.24285,
+      "std_deviation": 0.004007,
+      "percentage_of_total": 0.84,
+      "contention_metrics": {
+        "baseline_time": 5.2,
+        "contention_factor": 2.2,
+        "performance_degradation_percent": 120.0,
+        "variability_increase_factor": 2.7
+      }
+    },
+    "CalcHeatingCoil": {
+      "total_time": 7.992783,
+      "call_count": 836,
+      "avg_time_per_call": 0.009561,
+      "min_time": 0.003907,
+      "max_time": 0.133425,
+      "std_deviation": 0.002799,
+      "percentage_of_total": 0.64,
+      "contention_metrics": {
+        "baseline_time": 4.1,
+        "contention_factor": 2.1,
+        "performance_degradation_percent": 110.0,
+        "variability_increase_factor": 2.6
+      }
+    },
+    "SimulateChillers": {
+      "total_time": 40.54996,
+      "call_count": 426,
+      "avg_time_per_call": 0.095188,
+      "min_time": 0.001,
+      "max_time": 2.542673,
+      "std_deviation": 0.03561,
+      "percentage_of_total": 3.23,
+      "contention_metrics": {
+        "baseline_time": 12.5,
+        "contention_factor": 3.2,
+        "performance_degradation_percent": 220.0,
+        "variability_increase_factor": 4.1
+      }
+    },
+    "CalcBoilerModel": {
+      "total_time": 21.099476,
+      "call_count": 364,
+      "avg_time_per_call": 0.057966,
+      "min_time": 0.009974,
+      "max_time": 0.671959,
+      "std_deviation": 0.016813,
+      "percentage_of_total": 1.68,
+      "contention_metrics": {
+        "baseline_time": 6.8,
+        "contention_factor": 2.9,
+        "performance_degradation_percent": 190.0,
+        "variability_increase_factor": 3.4
+      }
+    },
+    "SimulatePumps": {
+      "total_time": 5.819777,
+      "call_count": 750,
+      "avg_time_per_call": 0.00776,
+      "min_time": 0.002117,
+      "max_time": 0.069946,
+      "std_deviation": 0.002333,
+      "percentage_of_total": 0.46,
+      "contention_metrics": {
+        "baseline_time": 2.9,
+        "contention_factor": 2.0,
+        "performance_degradation_percent": 100.0,
+        "variability_increase_factor": 2.5
+      }
+    },
+    "ManageZoneEquipment": {
+      "total_time": 44.922036,
+      "call_count": 1200,
+      "avg_time_per_call": 0.037435,
+      "min_time": 0.001528,
+      "max_time": 0.488809,
+      "std_deviation": 0.01425,
+      "percentage_of_total": 3.58,
+      "contention_metrics": {
+        "baseline_time": 15.6,
+        "contention_factor": 3.1,
+        "performance_degradation_percent": 210.0,
+        "variability_increase_factor": 3.8
+      }
+    },
+    "CalcZoneAirLoads": {
+      "total_time": 77.371536,
+      "call_count": 1172,
+      "avg_time_per_call": 0.066017,
+      "min_time": 0.003234,
+      "max_time": 0.999307,
+      "std_deviation": 0.022218,
+      "percentage_of_total": 6.17,
+      "contention_metrics": {
+        "baseline_time": 22.1,
+        "contention_factor": 3.4,
+        "performance_degradation_percent": 240.0,
+        "variability_increase_factor": 4.2
+      }
+    },
+    "SimulateInternalHeatGains": {
+      "total_time": 19.996659,
+      "call_count": 1088,
+      "avg_time_per_call": 0.018379,
+      "min_time": 0.001362,
+      "max_time": 0.277102,
+      "std_deviation": 0.005882,
+      "percentage_of_total": 1.59,
+      "contention_metrics": {
+        "baseline_time": 7.3,
+        "contention_factor": 2.7,
+        "performance_degradation_percent": 170.0,
+        "variability_increase_factor": 3.2
+      }
+    },
+    "CalcWindowHeatBalance": {
+      "total_time": 82.643861,
+      "call_count": 917,
+      "avg_time_per_call": 0.090124,
+      "min_time": 0.015834,
+      "max_time": 1.373847,
+      "std_deviation": 0.030622,
+      "percentage_of_total": 6.59,
+      "contention_metrics": {
+        "baseline_time": 19.8,
+        "contention_factor": 4.1,
+        "performance_degradation_percent": 310.0,
+        "variability_increase_factor": 5.2
+      }
+    },
+    "CalcExteriorSurfaceTemp": {
+      "total_time": 29.873606,
+      "call_count": 1029,
+      "avg_time_per_call": 0.029032,
+      "min_time": 0.005793,
+      "max_time": 0.387999,
+      "std_deviation": 0.008941,
+      "percentage_of_total": 2.38,
+      "contention_metrics": {
+        "baseline_time": 8.7,
+        "contention_factor": 3.3,
+        "performance_degradation_percent": 230.0,
+        "variability_increase_factor": 4.0
+      }
+    },
+    "CalcInteriorSurfaceTemp": {
+      "total_time": 40.259623,
+      "call_count": 1049,
+      "avg_time_per_call": 0.038379,
+      "min_time": 0.001,
+      "max_time": 0.780973,
+      "std_deviation": 0.012707,
+      "percentage_of_total": 3.21,
+      "contention_metrics": {
+        "baseline_time": 11.2,
+        "contention_factor": 3.5,
+        "performance_degradation_percent": 250.0,
+        "variability_increase_factor": 4.3
+      }
+    },
+    "CalcHeatBalFiniteDiff": {
+      "total_time": 155.749568,
+      "call_count": 733,
+      "avg_time_per_call": 0.212482,
+      "min_time": 0.00393,
+      "max_time": 2.750884,
+      "std_deviation": 0.081555,
+      "percentage_of_total": 12.42,
+      "contention_metrics": {
+        "baseline_time": 31.4,
+        "contention_factor": 4.8,
+        "performance_degradation_percent": 380.0,
+        "variability_increase_factor": 6.1
+      }
+    },
+    "CalcHeatBalConductionTransferFunction": {
+      "total_time": 116.399752,
+      "call_count": 678,
+      "avg_time_per_call": 0.171681,
+      "min_time": 0.048244,
+      "max_time": 2.268696,
+      "std_deviation": 0.060737,
+      "percentage_of_total": 9.28,
+      "contention_metrics": {
+        "baseline_time": 25.7,
+        "contention_factor": 4.5,
+        "performance_degradation_percent": 350.0,
+        "variability_increase_factor": 5.8
+      }
+    },
+    "ManageWeather": {
+      "total_time": 2.895628,
+      "call_count": 8728,
+      "avg_time_per_call": 0.000332,
+      "min_time": 0.001,
+      "max_time": 0.014243,
+      "std_deviation": 9.6e-05,
+      "percentage_of_total": 0.23,
+      "contention_metrics": {
+        "baseline_time": 1.8,
+        "contention_factor": 1.6,
+        "performance_degradation_percent": 60.0,
+        "variability_increase_factor": 2.1
+      }
+    },
+    "CalcSolarRadiation": {
+      "total_time": 37.848776,
+      "call_count": 1217,
+      "avg_time_per_call": 0.0311,
+      "min_time": 0.001,
+      "max_time": 0.481859,
+      "std_deviation": 0.010616,
+      "percentage_of_total": 3.02,
+      "contention_metrics": {
+        "baseline_time": 13.5,
+        "contention_factor": 2.8,
+        "performance_degradation_percent": 180.0,
+        "variability_increase_factor": 3.4
+      }
+    },
+    "CalcDifferenceSolarRadiation": {
+      "total_time": 10.315175,
+      "call_count": 1076,
+      "avg_time_per_call": 0.009587,
+      "min_time": 0.002683,
+      "max_time": 0.148177,
+      "std_deviation": 0.002965,
+      "percentage_of_total": 0.82,
+      "contention_metrics": {
+        "baseline_time": 4.2,
+        "contention_factor": 2.4,
+        "performance_degradation_percent": 140.0,
+        "variability_increase_factor": 2.9
+      }
+    },
+    "InterpolateBetweenTwoValues": {
+      "total_time": 0.090393,
+      "call_count": 14799,
+      "avg_time_per_call": 6e-06,
+      "min_time": 0.001,
+      "max_time": 0.010167,
+      "std_deviation": 2e-06,
+      "percentage_of_total": 0.01,
+      "contention_metrics": {
+        "baseline_time": 0.05,
+        "contention_factor": 1.8,
+        "performance_degradation_percent": 80.0,
+        "variability_increase_factor": 2.3
+      }
+    },
+    "CalculateSunDirectionCosines": {
+      "total_time": 1.320997,
+      "call_count": 8114,
+      "avg_time_per_call": 0.000163,
+      "min_time": 0.001,
+      "max_time": 0.014744,
+      "std_deviation": 5.4e-05,
+      "percentage_of_total": 0.11,
+      "contention_metrics": {
+        "baseline_time": 0.8,
+        "contention_factor": 1.7,
+        "performance_degradation_percent": 70.0,
+        "variability_increase_factor": 2.2
+      }
+    },
+    "ManagePlantLoops": {
+      "total_time": 118.067864,
+      "call_count": 636,
+      "avg_time_per_call": 0.185641,
+      "min_time": 0.025295,
+      "max_time": 3.809415,
+      "std_deviation": 0.061887,
+      "percentage_of_total": 9.41,
+      "contention_metrics": {
+        "baseline_time": 28.9,
+        "contention_factor": 3.9,
+        "performance_degradation_percent": 290.0,
+        "variability_increase_factor": 4.8
+      }
+    },
+    "SimulatePlantProfile": {
+      "total_time": 8.677895,
+      "call_count": 693,
+      "avg_time_per_call": 0.012522,
+      "min_time": 0.001,
+      "max_time": 0.228496,
+      "std_deviation": 0.004473,
+      "percentage_of_total": 0.69,
+      "contention_metrics": {
+        "baseline_time": 3.7,
+        "contention_factor": 2.5,
+        "performance_degradation_percent": 150.0,
+        "variability_increase_factor": 3.1
+      }
+    },
+    "UpdatePlantLoopInterface": {
+      "total_time": 4.526674,
+      "call_count": 866,
+      "avg_time_per_call": 0.005227,
+      "min_time": 0.001677,
+      "max_time": 0.066863,
+      "std_deviation": 0.00194,
+      "percentage_of_total": 0.36,
+      "contention_metrics": {
+        "baseline_time": 2.1,
+        "contention_factor": 2.2,
+        "performance_degradation_percent": 120.0,
+        "variability_increase_factor": 2.8
+      }
+    },
+    "CalcPlantValves": {
+      "total_time": 3.783711,
+      "call_count": 427,
+      "avg_time_per_call": 0.008861,
+      "min_time": 0.002964,
+      "max_time": 0.128694,
+      "std_deviation": 0.002927,
+      "percentage_of_total": 0.3,
+      "contention_metrics": {
+        "baseline_time": 1.9,
+        "contention_factor": 2.0,
+        "performance_degradation_percent": 100.0,
+        "variability_increase_factor": 2.5
+      }
+    },
+    "CalcTariffEvaluation": {
+      "total_time": 9.318672,
+      "call_count": 119,
+      "avg_time_per_call": 0.078308,
+      "min_time": 0.013697,
+      "max_time": 0.884209,
+      "std_deviation": 0.025882,
+      "percentage_of_total": 0.74,
+      "contention_metrics": {
+        "baseline_time": 5.1,
+        "contention_factor": 1.8,
+        "performance_degradation_percent": 80.0,
+        "variability_increase_factor": 2.2
+      }
+    },
+    "UpdateUtilityBills": {
+      "total_time": 4.209383,
+      "call_count": 142,
+      "avg_time_per_call": 0.029644,
+      "min_time": 0.00423,
+      "max_time": 0.475572,
+      "std_deviation": 0.008873,
+      "percentage_of_total": 0.34,
+      "contention_metrics": {
+        "baseline_time": 2.3,
+        "contention_factor": 1.7,
+        "performance_degradation_percent": 70.0,
+        "variability_increase_factor": 2.1
+      }
+    },
+    "EconomicTariffManager": {
+      "total_time": 7.527927,
+      "call_count": 104,
+      "avg_time_per_call": 0.072384,
+      "min_time": 0.004972,
+      "max_time": 0.932577,
+      "std_deviation": 0.022115,
+      "percentage_of_total": 0.6,
+      "contention_metrics": {
+        "baseline_time": 3.8,
+        "contention_factor": 1.9,
+        "performance_degradation_percent": 90.0,
+        "variability_increase_factor": 2.3
+      }
+    },
+    "UpdateDataandReport": {
+      "total_time": 43.859469,
+      "call_count": 186,
+      "avg_time_per_call": 0.235804,
+      "min_time": 0.028955,
+      "max_time": 3.775177,
+      "std_deviation": 0.084677,
+      "percentage_of_total": 3.5,
+      "contention_metrics": {
+        "baseline_time": 12.4,
+        "contention_factor": 3.7,
+        "performance_degradation_percent": 270.0,
+        "variability_increase_factor": 4.5
+      }
+    },
+    "WriteOutputToSQLite": {
+      "total_time": 35.808613,
+      "call_count": 177,
+      "avg_time_per_call": 0.202309,
+      "min_time": 0.040199,
+      "max_time": 2.997651,
+      "std_deviation": 0.06339,
+      "percentage_of_total": 2.86,
+      "contention_metrics": {
+        "baseline_time": 8.7,
+        "contention_factor": 4.2,
+        "performance_degradation_percent": 320.0,
+        "variability_increase_factor": 5.1
+      }
+    },
+    "ReportSurfaceHeatBalance": {
+      "total_time": 14.210492,
+      "call_count": 179,
+      "avg_time_per_call": 0.079388,
+      "min_time": 0.007996,
+      "max_time": 1.154735,
+      "std_deviation": 0.025475,
+      "percentage_of_total": 1.13,
+      "contention_metrics": {
+        "baseline_time": 4.6,
+        "contention_factor": 3.1,
+        "performance_degradation_percent": 210.0,
+        "variability_increase_factor": 3.8
+      }
+    },
+    "ReportAirHeatBalance": {
+      "total_time": 11.460864,
+      "call_count": 178,
+      "avg_time_per_call": 0.064387,
+      "min_time": 0.004947,
+      "max_time": 0.920666,
+      "std_deviation": 0.019663,
+      "percentage_of_total": 0.91,
+      "contention_metrics": {
+        "baseline_time": 3.9,
+        "contention_factor": 2.9,
+        "performance_degradation_percent": 190.0,
+        "variability_increase_factor": 3.5
+      }
+    },
+    "UpdateMeterReporting": {
+      "total_time": 5.327921,
+      "call_count": 208,
+      "avg_time_per_call": 0.025615,
+      "min_time": 0.004696,
+      "max_time": 0.309193,
+      "std_deviation": 0.007692,
+      "percentage_of_total": 0.42,
+      "contention_metrics": {
+        "baseline_time": 2.1,
+        "contention_factor": 2.6,
+        "performance_degradation_percent": 160.0,
+        "variability_increase_factor": 3.2
+      }
+    },
+    "GetInput": {
+      "total_time": 32.97,
+      "call_count": 1,
+      "avg_time_per_call": 32.97,
+      "min_time": 32.97,
+      "max_time": 32.97,
+      "std_deviation": 0,
+      "percentage_of_total": 2.63,
+      "contention_metrics": {
+        "baseline_time": 15.7,
+        "contention_factor": 2.1,
+        "performance_degradation_percent": 110.0,
+        "variability_increase_factor": 1.0
+      }
+    },
+    "InitializeSimulation": {
+      "total_time": 19.09,
+      "call_count": 1,
+      "avg_time_per_call": 19.09,
+      "min_time": 19.09,
+      "max_time": 19.09,
+      "std_deviation": 0,
+      "percentage_of_total": 1.52,
+      "contention_metrics": {
+        "baseline_time": 8.3,
+        "contention_factor": 2.3,
+        "performance_degradation_percent": 130.0,
+        "variability_increase_factor": 1.0
+      }
+    },
+    "SetupNodeVarsForReporting": {
+      "total_time": 4.32,
+      "call_count": 1,
+      "avg_time_per_call": 4.32,
+      "min_time": 4.32,
+      "max_time": 4.32,
+      "std_deviation": 0,
+      "percentage_of_total": 0.34,
+      "contention_metrics": {
+        "baseline_time": 2.4,
+        "contention_factor": 1.8,
+        "performance_degradation_percent": 80.0,
+        "variability_increase_factor": 1.0
+      }
+    },
+    "SetupOutputVariables": {
+      "total_time": 5.89,
+      "call_count": 1,
+      "avg_time_per_call": 5.89,
+      "min_time": 5.89,
+      "max_time": 5.89,
+      "std_deviation": 0,
+      "percentage_of_total": 0.47,
+      "contention_metrics": {
+        "baseline_time": 3.1,
+        "contention_factor": 1.9,
+        "performance_degradation_percent": 90.0,
+        "variability_increase_factor": 1.0
+      }
+    },
+    "ValidateInputData": {
+      "total_time": 9.6,
+      "call_count": 1,
+      "avg_time_per_call": 9.6,
+      "min_time": 9.6,
+      "max_time": 9.6,
+      "std_deviation": 0,
+      "percentage_of_total": 0.77,
+      "contention_metrics": {
+        "baseline_time": 4.8,
+        "contention_factor": 2.0,
+        "performance_degradation_percent": 100.0,
+        "variability_increase_factor": 1.0
+      }
+    },
+    "PsyRhoAirFnPbTdbW": {
+      "total_time": 0.045293,
+      "call_count": 44680,
+      "avg_time_per_call": 1e-06,
+      "min_time": 0.001,
+      "max_time": 0.009062,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.0,
+      "contention_metrics": {
+        "baseline_time": 0.02,
+        "contention_factor": 2.4,
+        "performance_degradation_percent": 140.0,
+        "variability_increase_factor": 3.8
+      }
+    },
+    "PsyHFnTdbW": {
+      "total_time": 0.035317,
+      "call_count": 49010,
+      "avg_time_per_call": 1e-06,
+      "min_time": 0.001,
+      "max_time": 0.010815,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.0,
+      "contention_metrics": {
+        "baseline_time": 0.015,
+        "contention_factor": 2.3,
+        "performance_degradation_percent": 130.0,
+        "variability_increase_factor": 3.6
+      }
+    },
+    "PsyCpAirFnW": {
+      "total_time": 0.02748,
+      "call_count": 37769,
+      "avg_time_per_call": 1e-06,
+      "min_time": 0.001,
+      "max_time": 0.014947,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.0,
+      "contention_metrics": {
+        "baseline_time": 0.012,
+        "contention_factor": 2.2,
+        "performance_degradation_percent": 120.0,
+        "variability_increase_factor": 3.4
+      }
+    },
+    "PsyTsatFnHPb": {
+      "total_time": 0.039444,
+      "call_count": 26732,
+      "avg_time_per_call": 1e-06,
+      "min_time": 0.001,
+      "max_time": 0.014067,
+      "std_deviation": 1e-06,
+      "percentage_of_total": 0.0,
+      "contention_metrics": {
+        "baseline_time": 0.018,
+        "contention_factor": 2.5,
+        "performance_degradation_percent": 150.0,
+        "variability_increase_factor": 3.9
+      }
+    },
+    "POLYF": {
+      "total_time": 0.024303,
+      "call_count": 115479,
+      "avg_time_per_call": 0.0,
+      "min_time": 0.001,
+      "max_time": 0.012911,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.0,
+      "contention_metrics": {
+        "baseline_time": 0.008,
+        "contention_factor": 3.1,
+        "performance_degradation_percent": 210.0,
+        "variability_increase_factor": 4.7
+      }
+    },
+    "CurveValue": {
+      "total_time": 0.03599,
+      "call_count": 83630,
+      "avg_time_per_call": 0.0,
+      "min_time": 0.001,
+      "max_time": 0.013055,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.0,
+      "contention_metrics": {
+        "baseline_time": 0.012,
+        "contention_factor": 2.9,
+        "performance_degradation_percent": 190.0,
+        "variability_increase_factor": 4.3
+      }
+    },
+    "TableLookup": {
+      "total_time": 0.089637,
+      "call_count": 68817,
+      "avg_time_per_call": 1e-06,
+      "min_time": 0.001,
+      "max_time": 0.014592,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.01,
+      "contention_metrics": {
+        "baseline_time": 0.025,
+        "contention_factor": 3.4,
+        "performance_degradation_percent": 240.0,
+        "variability_increase_factor": 5.2
+      }
+    },
+    "RegularQn": {
+      "total_time": 0.093468,
+      "call_count": 34688,
+      "avg_time_per_call": 3e-06,
+      "min_time": 0.001,
+      "max_time": 0.014439,
+      "std_deviation": 1e-06,
+      "percentage_of_total": 0.01,
+      "contention_metrics": {
+        "baseline_time": 0.035,
+        "contention_factor": 2.7,
+        "performance_degradation_percent": 170.0,
+        "variability_increase_factor": 3.9
+      }
+    }
+  },
+  "summary": {
+    "total_simulation_time": 1254.052,
+    "baseline_simulation_time": 385.895,
+    "overall_performance_degradation_percent": 225.0,
+    "additional_time_due_to_contention": 868.157,
+    "total_function_calls": 514806,
+    "top_5_time_consumers": [
+      {
+        "function": "CalcHeatBalFiniteDiff",
+        "time": 155.749568,
+        "percentage": 12.42,
+        "degradation_percent": 380.0
+      },
+      {
+        "function": "SimulateHVAC",
+        "time": 127.62884,
+        "percentage": 10.18,
+        "degradation_percent": 180.0
+      },
+      {
+        "function": "ManagePlantLoops",
+        "time": 118.067864,
+        "percentage": 9.41,
+        "degradation_percent": 290.0
+      },
+      {
+        "function": "CalcHeatBalConductionTransferFunction",
+        "time": 116.399752,
+        "percentage": 9.28,
+        "degradation_percent": 350.0
+      },
+      {
+        "function": "CalcWindowHeatBalance",
+        "time": 82.643861,
+        "percentage": 6.59,
+        "degradation_percent": 310.0
+      }
+    ],
+    "most_impacted_by_contention": [
+      {
+        "function": "CalcHeatBalFiniteDiff",
+        "degradation_percent": 380.0,
+        "time_increase": 124.35
+      },
+      {
+        "function": "CalcHeatBalConductionTransferFunction",
+        "degradation_percent": 350.0,
+        "time_increase": 90.7
+      },
+      {
+        "function": "WriteOutputToSQLite",
+        "degradation_percent": 320.0,
+        "time_increase": 27.109
+      },
+      {
+        "function": "CalcWindowHeatBalance",
+        "degradation_percent": 310.0,
+        "time_increase": 62.844
+      },
+      {
+        "function": "ManagePlantLoops",
+        "degradation_percent": 290.0,
+        "time_increase": 89.168
+      }
+    ],
+    "most_called_functions": [
+      {
+        "function": "POLYF",
+        "calls": 115479,
+        "avg_time": 0.0
+      },
+      {
+        "function": "CurveValue",
+        "calls": 83630,
+        "avg_time": 0.0
+      },
+      {
+        "function": "TableLookup",
+        "calls": 68817,
+        "avg_time": 1e-06
+      },
+      {
+        "function": "PsyHFnTdbW",
+        "calls": 49010,
+        "avg_time": 1e-06
+      },
+      {
+        "function": "PsyRhoAirFnPbTdbW",
+        "calls": 44680,
+        "avg_time": 1e-06
+      }
+    ]
+  }
+}

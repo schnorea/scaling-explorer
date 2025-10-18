@@ -1,0 +1,59 @@
+================================================================================
+EnergyPlus Simulation Performance Analysis Report
+================================================================================
+
+SIMULATION METADATA:
+--------------------
+Building Type: Commercial Office
+Climate Zone: 4A
+Simulation Period: Annual
+Timestep: 4 per hour
+Total Simulation Time: 388.227122
+
+PERFORMANCE SUMMARY:
+--------------------
+Total Simulation Time: 388.23 seconds
+Total Function Calls: 530,253
+
+PERFORMANCE BOTTLENECKS:
+-------------------------
+• SimulateHVAC:
+  - Total Time: 47.81s (12.3%)
+  - Calls: 858
+  - Avg per Call: 55.72ms
+
+• CalcHeatBalFiniteDiff:
+  - Total Time: 32.74s (8.4%)
+  - Calls: 724
+  - Avg per Call: 45.23ms
+
+• ManagePlantLoops:
+  - Total Time: 28.59s (7.4%)
+  - Calls: 632
+  - Avg per Call: 45.24ms
+
+• CalcHeatBalConductionTransferFunction:
+  - Total Time: 26.20s (6.8%)
+  - Calls: 689
+  - Avg per Call: 38.03ms
+
+• CalcZoneAirLoads:
+  - Total Time: 21.96s (5.7%)
+  - Calls: 1,169
+  - Avg per Call: 18.78ms
+
+OPTIMIZATION RECOMMENDATIONS:
+------------------------------
+1. Functions with high per-call overhead:
+   • GetInput: 15700.00ms per call
+   • InitializeSimulation: 8300.00ms per call
+   • UpdateDataandReport: 62.68ms per call
+   • SimulateHVAC: 55.72ms per call
+   • WriteOutputToSQLite: 45.39ms per call
+
+3. Most frequently called utility functions (optimization targets):
+   • POLYF: 127,094 calls, 0.00s total overhead
+   • CurveValue: 87,357 calls, 0.00s total overhead
+   • TableLookup: 65,962 calls, 0.00s total overhead
+   • PsyHFnTdbW: 51,061 calls, 0.00s total overhead
+   • PsyRhoAirFnPbTdbW: 44,290 calls, 0.00s total overhead

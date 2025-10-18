@@ -1,0 +1,1143 @@
+{
+  "metadata": {
+    "building_type": "Commercial Office",
+    "climate_zone": "4A",
+    "simulation_period": "Annual",
+    "timestep": "4 per hour",
+    "total_simulation_time": 514.742824,
+    "system_conditions": {
+      "cpu_cores": 8,
+      "threads_available": 16,
+      "thread_pool_size": 6,
+      "memory_pressure": "High",
+      "available_memory": "2.1GB of 16GB",
+      "cache_hit_ratio": "71%",
+      "swap_activity": "Moderate (1.4GB active)",
+      "page_faults_per_second": 850,
+      "context_switches_per_second": 12500,
+      "concurrent_applications": [
+        "Chrome (1.8GB)",
+        "Docker (1.2GB)",
+        "Visual Studio (950MB)",
+        "Teams (380MB)"
+      ],
+      "threading_efficiency_degradation": "25%",
+      "scenario": "Multithreaded with Memory Contention"
+    }
+  },
+  "timestamp": "2025-10-17T15:34:24.636875",
+  "functions": {
+    "SimulateHVAC": {
+      "total_time": 62.987287,
+      "call_count": 833,
+      "avg_time_per_call": 0.075615,
+      "min_time": 0.029283,
+      "max_time": 1.54496,
+      "std_deviation": 0.020672,
+      "percentage_of_total": 12.24,
+      "hybrid_metrics": {
+        "baseline_time": 45.2,
+        "thread_improvement_factor": 1.8,
+        "thread_efficiency": 0.6,
+        "contention_factor": 2.1,
+        "effective_thread_improvement": 1.48,
+        "net_performance_ratio": 1.42,
+        "net_effect": "mixed",
+        "time_saved_from_threading": 14.659459,
+        "time_lost_to_contention": 33.594595,
+        "net_time_change": 18.935135
+      }
+    },
+    "CalcAirLoopSplitter": {
+      "total_time": 1.868199,
+      "call_count": 1217,
+      "avg_time_per_call": 0.001535,
+      "min_time": 0.001,
+      "max_time": 0.027954,
+      "std_deviation": 0.000575,
+      "percentage_of_total": 0.36,
+      "hybrid_metrics": {
+        "baseline_time": 2.1,
+        "thread_improvement_factor": 2.2,
+        "thread_efficiency": 0.65,
+        "contention_factor": 1.8,
+        "effective_thread_improvement": 1.78,
+        "net_performance_ratio": 1.01,
+        "net_effect": "slight_gain",
+        "time_saved_from_threading": 0.920225,
+        "time_lost_to_contention": 0.94382,
+        "net_time_change": 0.023596
+      }
+    },
+    "SimulateAirLoopComponents": {
+      "total_time": 20.281352,
+      "call_count": 955,
+      "avg_time_per_call": 0.021237,
+      "min_time": 0.006253,
+      "max_time": 0.318138,
+      "std_deviation": 0.006157,
+      "percentage_of_total": 3.94,
+      "hybrid_metrics": {
+        "baseline_time": 18.7,
+        "thread_improvement_factor": 2.4,
+        "thread_efficiency": 0.62,
+        "contention_factor": 2.0,
+        "effective_thread_improvement": 1.87,
+        "net_performance_ratio": 1.07,
+        "net_effect": "mixed",
+        "time_saved_from_threading": 8.689293,
+        "time_lost_to_contention": 10.010707,
+        "net_time_change": 1.321413
+      }
+    },
+    "CalcFanSystemTemperatures": {
+      "total_time": 4.236685,
+      "call_count": 1077,
+      "avg_time_per_call": 0.003934,
+      "min_time": 0.001,
+      "max_time": 0.060565,
+      "std_deviation": 0.00104,
+      "percentage_of_total": 0.82,
+      "hybrid_metrics": {
+        "baseline_time": 3.4,
+        "thread_improvement_factor": 1.9,
+        "thread_efficiency": 0.58,
+        "contention_factor": 1.9,
+        "effective_thread_improvement": 1.52,
+        "net_performance_ratio": 1.25,
+        "net_effect": "neutral",
+        "time_saved_from_threading": 1.166097,
+        "time_lost_to_contention": 2.010512,
+        "net_time_change": 0.844415
+      }
+    },
+    "SimulateCoils": {
+      "total_time": 9.863876,
+      "call_count": 1027,
+      "avg_time_per_call": 0.009605,
+      "min_time": 0.001047,
+      "max_time": 0.189342,
+      "std_deviation": 0.002863,
+      "percentage_of_total": 1.92,
+      "hybrid_metrics": {
+        "baseline_time": 8.9,
+        "thread_improvement_factor": 2.1,
+        "thread_efficiency": 0.6,
+        "contention_factor": 1.9,
+        "effective_thread_improvement": 1.66,
+        "net_performance_ratio": 1.14,
+        "net_effect": "slight_gain",
+        "time_saved_from_threading": 3.538554,
+        "time_lost_to_contention": 4.825301,
+        "net_time_change": 1.286747
+      }
+    },
+    "CalcCoolingCoil": {
+      "total_time": 6.16944,
+      "call_count": 949,
+      "avg_time_per_call": 0.006501,
+      "min_time": 0.002338,
+      "max_time": 0.068411,
+      "std_deviation": 0.001918,
+      "percentage_of_total": 1.2,
+      "hybrid_metrics": {
+        "baseline_time": 5.2,
+        "thread_improvement_factor": 2.0,
+        "thread_efficiency": 0.55,
+        "contention_factor": 1.8,
+        "effective_thread_improvement": 1.55,
+        "net_performance_ratio": 1.16,
+        "net_effect": "slight_gain",
+        "time_saved_from_threading": 1.845161,
+        "time_lost_to_contention": 2.683871,
+        "net_time_change": 0.83871
+      }
+    },
+    "CalcHeatingCoil": {
+      "total_time": 4.947009,
+      "call_count": 904,
+      "avg_time_per_call": 0.005472,
+      "min_time": 0.002816,
+      "max_time": 0.115034,
+      "std_deviation": 0.001394,
+      "percentage_of_total": 0.96,
+      "hybrid_metrics": {
+        "baseline_time": 4.1,
+        "thread_improvement_factor": 1.8,
+        "thread_efficiency": 0.52,
+        "contention_factor": 1.7,
+        "effective_thread_improvement": 1.42,
+        "net_performance_ratio": 1.2,
+        "net_effect": "slight_gain",
+        "time_saved_from_threading": 1.20452,
+        "time_lost_to_contention": 2.026836,
+        "net_time_change": 0.822316
+      }
+    },
+    "SimulateChillers": {
+      "total_time": 23.585062,
+      "call_count": 447,
+      "avg_time_per_call": 0.052763,
+      "min_time": 0.025618,
+      "max_time": 0.930906,
+      "std_deviation": 0.011588,
+      "percentage_of_total": 4.58,
+      "hybrid_metrics": {
+        "baseline_time": 12.5,
+        "thread_improvement_factor": 1.6,
+        "thread_efficiency": 0.45,
+        "contention_factor": 2.4,
+        "effective_thread_improvement": 1.27,
+        "net_performance_ratio": 1.89,
+        "net_effect": "loss",
+        "time_saved_from_threading": 2.65748,
+        "time_lost_to_contention": 13.779528,
+        "net_time_change": 11.122047
+      }
+    },
+    "CalcBoilerModel": {
+      "total_time": 12.828501,
+      "call_count": 376,
+      "avg_time_per_call": 0.034118,
+      "min_time": 0.019744,
+      "max_time": 0.200281,
+      "std_deviation": 0.006702,
+      "percentage_of_total": 2.49,
+      "hybrid_metrics": {
+        "baseline_time": 6.8,
+        "thread_improvement_factor": 1.5,
+        "thread_efficiency": 0.4,
+        "contention_factor": 2.2,
+        "effective_thread_improvement": 1.2,
+        "net_performance_ratio": 1.83,
+        "net_effect": "loss",
+        "time_saved_from_threading": 1.133333,
+        "time_lost_to_contention": 6.8,
+        "net_time_change": 5.666667
+      }
+    },
+    "SimulatePumps": {
+      "total_time": 4.555743,
+      "call_count": 732,
+      "avg_time_per_call": 0.006224,
+      "min_time": 0.003585,
+      "max_time": 0.073292,
+      "std_deviation": 0.001339,
+      "percentage_of_total": 0.89,
+      "hybrid_metrics": {
+        "baseline_time": 2.9,
+        "thread_improvement_factor": 1.4,
+        "thread_efficiency": 0.35,
+        "contention_factor": 1.8,
+        "effective_thread_improvement": 1.14,
+        "net_performance_ratio": 1.58,
+        "net_effect": "slight_loss",
+        "time_saved_from_threading": 0.35614,
+        "time_lost_to_contention": 2.035088,
+        "net_time_change": 1.678947
+      }
+    },
+    "ManageZoneEquipment": {
+      "total_time": 15.24439,
+      "call_count": 1152,
+      "avg_time_per_call": 0.013233,
+      "min_time": 0.001,
+      "max_time": 0.09379,
+      "std_deviation": 0.005469,
+      "percentage_of_total": 2.96,
+      "hybrid_metrics": {
+        "baseline_time": 15.6,
+        "thread_improvement_factor": 3.2,
+        "thread_efficiency": 0.68,
+        "contention_factor": 2.3,
+        "effective_thread_improvement": 2.5,
+        "net_performance_ratio": 0.92,
+        "net_effect": "gain",
+        "time_saved_from_threading": 9.35,
+        "time_lost_to_contention": 8.125,
+        "net_time_change": -1.225
+      }
+    },
+    "CalcZoneAirLoads": {
+      "total_time": 18.363557,
+      "call_count": 1134,
+      "avg_time_per_call": 0.016194,
+      "min_time": 0.001,
+      "max_time": 0.454364,
+      "std_deviation": 0.007654,
+      "percentage_of_total": 3.57,
+      "hybrid_metrics": {
+        "baseline_time": 22.1,
+        "thread_improvement_factor": 3.8,
+        "thread_efficiency": 0.7,
+        "contention_factor": 2.5,
+        "effective_thread_improvement": 2.96,
+        "net_performance_ratio": 0.84,
+        "net_effect": "gain",
+        "time_saved_from_threading": 14.633784,
+        "time_lost_to_contention": 11.199324,
+        "net_time_change": -3.434459
+      }
+    },
+    "SimulateInternalHeatGains": {
+      "total_time": 6.680509,
+      "call_count": 1083,
+      "avg_time_per_call": 0.006169,
+      "min_time": 0.001,
+      "max_time": 0.07711,
+      "std_deviation": 0.002585,
+      "percentage_of_total": 1.3,
+      "hybrid_metrics": {
+        "baseline_time": 7.3,
+        "thread_improvement_factor": 2.9,
+        "thread_efficiency": 0.65,
+        "contention_factor": 2.1,
+        "effective_thread_improvement": 2.23,
+        "net_performance_ratio": 0.94,
+        "net_effect": "gain",
+        "time_saved_from_threading": 4.033781,
+        "time_lost_to_contention": 3.592841,
+        "net_time_change": -0.44094
+      }
+    },
+    "CalcWindowHeatBalance": {
+      "total_time": 18.305205,
+      "call_count": 1003,
+      "avg_time_per_call": 0.01825,
+      "min_time": 0.001082,
+      "max_time": 0.294818,
+      "std_deviation": 0.007537,
+      "percentage_of_total": 3.56,
+      "hybrid_metrics": {
+        "baseline_time": 19.8,
+        "thread_improvement_factor": 4.2,
+        "thread_efficiency": 0.72,
+        "contention_factor": 2.8,
+        "effective_thread_improvement": 3.3,
+        "net_performance_ratio": 0.85,
+        "net_effect": "gain",
+        "time_saved_from_threading": 13.807264,
+        "time_lost_to_contention": 10.786925,
+        "net_time_change": -3.020339
+      }
+    },
+    "CalcExteriorSurfaceTemp": {
+      "total_time": 7.806865,
+      "call_count": 1067,
+      "avg_time_per_call": 0.007317,
+      "min_time": 0.001,
+      "max_time": 0.096833,
+      "std_deviation": 0.003018,
+      "percentage_of_total": 1.52,
+      "hybrid_metrics": {
+        "baseline_time": 8.7,
+        "thread_improvement_factor": 3.5,
+        "thread_efficiency": 0.68,
+        "contention_factor": 2.4,
+        "effective_thread_improvement": 2.7,
+        "net_performance_ratio": 0.89,
+        "net_effect": "gain",
+        "time_saved_from_threading": 5.477778,
+        "time_lost_to_contention": 4.511111,
+        "net_time_change": -0.966667
+      }
+    },
+    "CalcInteriorSurfaceTemp": {
+      "total_time": 9.4669,
+      "call_count": 987,
+      "avg_time_per_call": 0.009592,
+      "min_time": 0.001,
+      "max_time": 0.143194,
+      "std_deviation": 0.004397,
+      "percentage_of_total": 1.84,
+      "hybrid_metrics": {
+        "baseline_time": 11.2,
+        "thread_improvement_factor": 3.6,
+        "thread_efficiency": 0.7,
+        "contention_factor": 2.5,
+        "effective_thread_improvement": 2.82,
+        "net_performance_ratio": 0.89,
+        "net_effect": "gain",
+        "time_saved_from_threading": 7.228369,
+        "time_lost_to_contention": 5.957447,
+        "net_time_change": -1.270922
+      }
+    },
+    "CalcHeatBalFiniteDiff": {
+      "total_time": 28.36292,
+      "call_count": 729,
+      "avg_time_per_call": 0.038907,
+      "min_time": 0.001,
+      "max_time": 0.35891,
+      "std_deviation": 0.01882,
+      "percentage_of_total": 5.51,
+      "hybrid_metrics": {
+        "baseline_time": 31.4,
+        "thread_improvement_factor": 4.8,
+        "thread_efficiency": 0.65,
+        "contention_factor": 3.2,
+        "effective_thread_improvement": 3.47,
+        "net_performance_ratio": 0.92,
+        "net_effect": "mixed",
+        "time_saved_from_threading": 22.351009,
+        "time_lost_to_contention": 19.907781,
+        "net_time_change": -2.443228
+      }
+    },
+    "CalcHeatBalConductionTransferFunction": {
+      "total_time": 26.411594,
+      "call_count": 693,
+      "avg_time_per_call": 0.038112,
+      "min_time": 0.00857,
+      "max_time": 0.544382,
+      "std_deviation": 0.014343,
+      "percentage_of_total": 5.13,
+      "hybrid_metrics": {
+        "baseline_time": 25.7,
+        "thread_improvement_factor": 4.5,
+        "thread_efficiency": 0.63,
+        "contention_factor": 3.0,
+        "effective_thread_improvement": 3.21,
+        "net_performance_ratio": 0.94,
+        "net_effect": "mixed",
+        "time_saved_from_threading": 17.681279,
+        "time_lost_to_contention": 16.037441,
+        "net_time_change": -1.643838
+      }
+    },
+    "ManageWeather": {
+      "total_time": 2.507594,
+      "call_count": 8864,
+      "avg_time_per_call": 0.000283,
+      "min_time": 0.001,
+      "max_time": 0.017507,
+      "std_deviation": 6.3e-05,
+      "percentage_of_total": 0.49,
+      "hybrid_metrics": {
+        "baseline_time": 1.8,
+        "thread_improvement_factor": 1.1,
+        "thread_efficiency": 0.2,
+        "contention_factor": 1.4,
+        "effective_thread_improvement": 1.02,
+        "net_performance_ratio": 1.37,
+        "net_effect": "loss",
+        "time_saved_from_threading": 0.035294,
+        "time_lost_to_contention": 0.705882,
+        "net_time_change": 0.670588
+      }
+    },
+    "CalcSolarRadiation": {
+      "total_time": 13.445135,
+      "call_count": 1211,
+      "avg_time_per_call": 0.011103,
+      "min_time": 0.003749,
+      "max_time": 0.319139,
+      "std_deviation": 0.004393,
+      "percentage_of_total": 2.61,
+      "hybrid_metrics": {
+        "baseline_time": 13.5,
+        "thread_improvement_factor": 2.8,
+        "thread_efficiency": 0.62,
+        "contention_factor": 2.1,
+        "effective_thread_improvement": 2.12,
+        "net_performance_ratio": 0.99,
+        "net_effect": "gain",
+        "time_saved_from_threading": 7.120038,
+        "time_lost_to_contention": 7.017958,
+        "net_time_change": -0.102079
+      }
+    },
+    "CalcDifferenceSolarRadiation": {
+      "total_time": 3.913062,
+      "call_count": 1136,
+      "avg_time_per_call": 0.003445,
+      "min_time": 0.001146,
+      "max_time": 0.044667,
+      "std_deviation": 0.001356,
+      "percentage_of_total": 0.76,
+      "hybrid_metrics": {
+        "baseline_time": 4.2,
+        "thread_improvement_factor": 2.6,
+        "thread_efficiency": 0.6,
+        "contention_factor": 1.9,
+        "effective_thread_improvement": 1.96,
+        "net_performance_ratio": 0.97,
+        "net_effect": "gain",
+        "time_saved_from_threading": 2.057143,
+        "time_lost_to_contention": 1.928571,
+        "net_time_change": -0.128571
+      }
+    },
+    "InterpolateBetweenTwoValues": {
+      "total_time": 0.075865,
+      "call_count": 15870,
+      "avg_time_per_call": 5e-06,
+      "min_time": 0.001,
+      "max_time": 0.017141,
+      "std_deviation": 1e-06,
+      "percentage_of_total": 0.01,
+      "hybrid_metrics": {
+        "baseline_time": 0.05,
+        "thread_improvement_factor": 1.2,
+        "thread_efficiency": 0.2,
+        "contention_factor": 1.6,
+        "effective_thread_improvement": 1.04,
+        "net_performance_ratio": 1.54,
+        "net_effect": "loss",
+        "time_saved_from_threading": 0.001923,
+        "time_lost_to_contention": 0.028846,
+        "net_time_change": 0.026923
+      }
+    },
+    "CalculateSunDirectionCosines": {
+      "total_time": 1.11508,
+      "call_count": 8730,
+      "avg_time_per_call": 0.000128,
+      "min_time": 0.001,
+      "max_time": 0.012381,
+      "std_deviation": 3.2e-05,
+      "percentage_of_total": 0.22,
+      "hybrid_metrics": {
+        "baseline_time": 0.8,
+        "thread_improvement_factor": 1.3,
+        "thread_efficiency": 0.25,
+        "contention_factor": 1.5,
+        "effective_thread_improvement": 1.07,
+        "net_performance_ratio": 1.4,
+        "net_effect": "loss",
+        "time_saved_from_threading": 0.055814,
+        "time_lost_to_contention": 0.372093,
+        "net_time_change": 0.316279
+      }
+    },
+    "ManagePlantLoops": {
+      "total_time": 51.639473,
+      "call_count": 660,
+      "avg_time_per_call": 0.078242,
+      "min_time": 0.03588,
+      "max_time": 1.28712,
+      "std_deviation": 0.017394,
+      "percentage_of_total": 10.03,
+      "hybrid_metrics": {
+        "baseline_time": 28.9,
+        "thread_improvement_factor": 2.2,
+        "thread_efficiency": 0.5,
+        "contention_factor": 2.8,
+        "effective_thread_improvement": 1.6,
+        "net_performance_ratio": 1.75,
+        "net_effect": "loss",
+        "time_saved_from_threading": 10.8375,
+        "time_lost_to_contention": 32.5125,
+        "net_time_change": 21.675
+      }
+    },
+    "SimulatePlantProfile": {
+      "total_time": 5.333794,
+      "call_count": 724,
+      "avg_time_per_call": 0.007367,
+      "min_time": 0.004614,
+      "max_time": 0.187988,
+      "std_deviation": 0.001934,
+      "percentage_of_total": 1.04,
+      "hybrid_metrics": {
+        "baseline_time": 3.7,
+        "thread_improvement_factor": 1.8,
+        "thread_efficiency": 0.45,
+        "contention_factor": 2.0,
+        "effective_thread_improvement": 1.36,
+        "net_performance_ratio": 1.47,
+        "net_effect": "slight_loss",
+        "time_saved_from_threading": 0.979412,
+        "time_lost_to_contention": 2.720588,
+        "net_time_change": 1.741176
+      }
+    },
+    "UpdatePlantLoopInterface": {
+      "total_time": 3.24018,
+      "call_count": 875,
+      "avg_time_per_call": 0.003703,
+      "min_time": 0.001275,
+      "max_time": 0.070033,
+      "std_deviation": 0.00096,
+      "percentage_of_total": 0.63,
+      "hybrid_metrics": {
+        "baseline_time": 2.1,
+        "thread_improvement_factor": 1.4,
+        "thread_efficiency": 0.35,
+        "contention_factor": 1.8,
+        "effective_thread_improvement": 1.14,
+        "net_performance_ratio": 1.58,
+        "net_effect": "loss",
+        "time_saved_from_threading": 0.257895,
+        "time_lost_to_contention": 1.473684,
+        "net_time_change": 1.215789
+      }
+    },
+    "CalcPlantValves": {
+      "total_time": 2.542274,
+      "call_count": 409,
+      "avg_time_per_call": 0.006216,
+      "min_time": 0.001644,
+      "max_time": 0.099395,
+      "std_deviation": 0.001711,
+      "percentage_of_total": 0.49,
+      "hybrid_metrics": {
+        "baseline_time": 1.9,
+        "thread_improvement_factor": 1.6,
+        "thread_efficiency": 0.38,
+        "contention_factor": 1.7,
+        "effective_thread_improvement": 1.23,
+        "net_performance_ratio": 1.38,
+        "net_effect": "slight_loss",
+        "time_saved_from_threading": 0.352769,
+        "time_lost_to_contention": 1.083062,
+        "net_time_change": 0.730293
+      }
+    },
+    "CalcTariffEvaluation": {
+      "total_time": 7.15075,
+      "call_count": 118,
+      "avg_time_per_call": 0.0606,
+      "min_time": 0.018276,
+      "max_time": 0.838943,
+      "std_deviation": 0.01661,
+      "percentage_of_total": 1.39,
+      "hybrid_metrics": {
+        "baseline_time": 5.1,
+        "thread_improvement_factor": 1.2,
+        "thread_efficiency": 0.25,
+        "contention_factor": 1.5,
+        "effective_thread_improvement": 1.05,
+        "net_performance_ratio": 1.43,
+        "net_effect": "loss",
+        "time_saved_from_threading": 0.242857,
+        "time_lost_to_contention": 2.428571,
+        "net_time_change": 2.185714
+      }
+    },
+    "UpdateUtilityBills": {
+      "total_time": 3.170632,
+      "call_count": 135,
+      "avg_time_per_call": 0.023486,
+      "min_time": 0.005606,
+      "max_time": 0.174105,
+      "std_deviation": 0.006222,
+      "percentage_of_total": 0.62,
+      "hybrid_metrics": {
+        "baseline_time": 2.3,
+        "thread_improvement_factor": 1.1,
+        "thread_efficiency": 0.2,
+        "contention_factor": 1.4,
+        "effective_thread_improvement": 1.02,
+        "net_performance_ratio": 1.37,
+        "net_effect": "loss",
+        "time_saved_from_threading": 0.045098,
+        "time_lost_to_contention": 0.901961,
+        "net_time_change": 0.856863
+      }
+    },
+    "EconomicTariffManager": {
+      "total_time": 5.91035,
+      "call_count": 106,
+      "avg_time_per_call": 0.055758,
+      "min_time": 0.023782,
+      "max_time": 0.611255,
+      "std_deviation": 0.013208,
+      "percentage_of_total": 1.15,
+      "hybrid_metrics": {
+        "baseline_time": 3.8,
+        "thread_improvement_factor": 1.1,
+        "thread_efficiency": 0.22,
+        "contention_factor": 1.6,
+        "effective_thread_improvement": 1.02,
+        "net_performance_ratio": 1.57,
+        "net_effect": "loss",
+        "time_saved_from_threading": 0.0818,
+        "time_lost_to_contention": 2.23092,
+        "net_time_change": 2.149119
+      }
+    },
+    "UpdateDataandReport": {
+      "total_time": 27.730588,
+      "call_count": 196,
+      "avg_time_per_call": 0.141483,
+      "min_time": 0.075993,
+      "max_time": 2.179267,
+      "std_deviation": 0.025,
+      "percentage_of_total": 5.39,
+      "hybrid_metrics": {
+        "baseline_time": 12.4,
+        "thread_improvement_factor": 1.3,
+        "thread_efficiency": 0.3,
+        "contention_factor": 2.5,
+        "effective_thread_improvement": 1.09,
+        "net_performance_ratio": 2.29,
+        "net_effect": "loss",
+        "time_saved_from_threading": 1.023853,
+        "time_lost_to_contention": 17.06422,
+        "net_time_change": 16.040367
+      }
+    },
+    "WriteOutputToSQLite": {
+      "total_time": 24.154079,
+      "call_count": 176,
+      "avg_time_per_call": 0.137239,
+      "min_time": 0.094456,
+      "max_time": 1.770613,
+      "std_deviation": 0.0175,
+      "percentage_of_total": 4.69,
+      "hybrid_metrics": {
+        "baseline_time": 8.7,
+        "thread_improvement_factor": 1.2,
+        "thread_efficiency": 0.25,
+        "contention_factor": 2.8,
+        "effective_thread_improvement": 1.05,
+        "net_performance_ratio": 2.67,
+        "net_effect": "loss",
+        "time_saved_from_threading": 0.414286,
+        "time_lost_to_contention": 14.914286,
+        "net_time_change": 14.5
+      }
+    },
+    "ReportSurfaceHeatBalance": {
+      "total_time": 9.367975,
+      "call_count": 197,
+      "avg_time_per_call": 0.047553,
+      "min_time": 0.023507,
+      "max_time": 0.829075,
+      "std_deviation": 0.008528,
+      "percentage_of_total": 1.82,
+      "hybrid_metrics": {
+        "baseline_time": 4.6,
+        "thread_improvement_factor": 1.4,
+        "thread_efficiency": 0.32,
+        "contention_factor": 2.2,
+        "effective_thread_improvement": 1.13,
+        "net_performance_ratio": 1.95,
+        "net_effect": "loss",
+        "time_saved_from_threading": 0.521986,
+        "time_lost_to_contention": 4.893617,
+        "net_time_change": 4.371631
+      }
+    },
+    "ReportAirHeatBalance": {
+      "total_time": 7.078044,
+      "call_count": 187,
+      "avg_time_per_call": 0.037851,
+      "min_time": 0.022523,
+      "max_time": 0.322392,
+      "std_deviation": 0.007487,
+      "percentage_of_total": 1.38,
+      "hybrid_metrics": {
+        "baseline_time": 3.9,
+        "thread_improvement_factor": 1.3,
+        "thread_efficiency": 0.3,
+        "contention_factor": 2.0,
+        "effective_thread_improvement": 1.09,
+        "net_performance_ratio": 1.83,
+        "net_effect": "loss",
+        "time_saved_from_threading": 0.322018,
+        "time_lost_to_contention": 3.577982,
+        "net_time_change": 3.255963
+      }
+    },
+    "UpdateMeterReporting": {
+      "total_time": 3.481783,
+      "call_count": 206,
+      "avg_time_per_call": 0.016902,
+      "min_time": 0.011879,
+      "max_time": 0.352587,
+      "std_deviation": 0.003398,
+      "percentage_of_total": 0.68,
+      "hybrid_metrics": {
+        "baseline_time": 2.1,
+        "thread_improvement_factor": 1.2,
+        "thread_efficiency": 0.28,
+        "contention_factor": 1.8,
+        "effective_thread_improvement": 1.06,
+        "net_performance_ratio": 1.7,
+        "net_effect": "loss",
+        "time_saved_from_threading": 0.111364,
+        "time_lost_to_contention": 1.590909,
+        "net_time_change": 1.479545
+      }
+    },
+    "GetInput": {
+      "total_time": 28.26,
+      "call_count": 1,
+      "avg_time_per_call": 28.26,
+      "min_time": 28.26,
+      "max_time": 28.26,
+      "std_deviation": 0,
+      "percentage_of_total": 5.49,
+      "hybrid_metrics": {
+        "baseline_time": 15.7,
+        "thread_improvement_factor": 1.0,
+        "thread_efficiency": 0.0,
+        "contention_factor": 1.8,
+        "effective_thread_improvement": 1.0,
+        "net_performance_ratio": 1.8,
+        "net_effect": "loss",
+        "time_saved_from_threading": 0.0,
+        "time_lost_to_contention": 12.56,
+        "net_time_change": 12.56
+      }
+    },
+    "InitializeSimulation": {
+      "total_time": 15.77,
+      "call_count": 1,
+      "avg_time_per_call": 15.77,
+      "min_time": 15.77,
+      "max_time": 15.77,
+      "std_deviation": 0,
+      "percentage_of_total": 3.06,
+      "hybrid_metrics": {
+        "baseline_time": 8.3,
+        "thread_improvement_factor": 1.0,
+        "thread_efficiency": 0.0,
+        "contention_factor": 1.9,
+        "effective_thread_improvement": 1.0,
+        "net_performance_ratio": 1.9,
+        "net_effect": "loss",
+        "time_saved_from_threading": 0.0,
+        "time_lost_to_contention": 7.47,
+        "net_time_change": 7.47
+      }
+    },
+    "SetupNodeVarsForReporting": {
+      "total_time": 3.6,
+      "call_count": 1,
+      "avg_time_per_call": 3.6,
+      "min_time": 3.6,
+      "max_time": 3.6,
+      "std_deviation": 0,
+      "percentage_of_total": 0.7,
+      "hybrid_metrics": {
+        "baseline_time": 2.4,
+        "thread_improvement_factor": 1.0,
+        "thread_efficiency": 0.0,
+        "contention_factor": 1.5,
+        "effective_thread_improvement": 1.0,
+        "net_performance_ratio": 1.5,
+        "net_effect": "loss",
+        "time_saved_from_threading": 0.0,
+        "time_lost_to_contention": 1.2,
+        "net_time_change": 1.2
+      }
+    },
+    "SetupOutputVariables": {
+      "total_time": 4.96,
+      "call_count": 1,
+      "avg_time_per_call": 4.96,
+      "min_time": 4.96,
+      "max_time": 4.96,
+      "std_deviation": 0,
+      "percentage_of_total": 0.96,
+      "hybrid_metrics": {
+        "baseline_time": 3.1,
+        "thread_improvement_factor": 1.0,
+        "thread_efficiency": 0.0,
+        "contention_factor": 1.6,
+        "effective_thread_improvement": 1.0,
+        "net_performance_ratio": 1.6,
+        "net_effect": "loss",
+        "time_saved_from_threading": 0.0,
+        "time_lost_to_contention": 1.86,
+        "net_time_change": 1.86
+      }
+    },
+    "ValidateInputData": {
+      "total_time": 8.16,
+      "call_count": 1,
+      "avg_time_per_call": 8.16,
+      "min_time": 8.16,
+      "max_time": 8.16,
+      "std_deviation": 0,
+      "percentage_of_total": 1.59,
+      "hybrid_metrics": {
+        "baseline_time": 4.8,
+        "thread_improvement_factor": 1.0,
+        "thread_efficiency": 0.0,
+        "contention_factor": 1.7,
+        "effective_thread_improvement": 1.0,
+        "net_performance_ratio": 1.7,
+        "net_effect": "loss",
+        "time_saved_from_threading": 0.0,
+        "time_lost_to_contention": 3.36,
+        "net_time_change": 3.36
+      }
+    },
+    "PsyRhoAirFnPbTdbW": {
+      "total_time": 0.021332,
+      "call_count": 45226,
+      "avg_time_per_call": 0.0,
+      "min_time": 0.001,
+      "max_time": 0.008785,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.0,
+      "hybrid_metrics": {
+        "baseline_time": 0.02,
+        "thread_improvement_factor": 2.8,
+        "thread_efficiency": 0.55,
+        "contention_factor": 2.0,
+        "effective_thread_improvement": 1.99,
+        "net_performance_ratio": 1.01,
+        "net_effect": "slight_loss",
+        "time_saved_from_threading": 0.00995,
+        "time_lost_to_contention": 0.01005,
+        "net_time_change": 0.000101
+      }
+    },
+    "PsyHFnTdbW": {
+      "total_time": 0.01365,
+      "call_count": 53999,
+      "avg_time_per_call": 0.0,
+      "min_time": 0.001,
+      "max_time": 0.019576,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.0,
+      "hybrid_metrics": {
+        "baseline_time": 0.015,
+        "thread_improvement_factor": 2.9,
+        "thread_efficiency": 0.57,
+        "contention_factor": 1.9,
+        "effective_thread_improvement": 2.08,
+        "net_performance_ratio": 0.91,
+        "net_effect": "slight_loss",
+        "time_saved_from_threading": 0.007799,
+        "time_lost_to_contention": 0.006481,
+        "net_time_change": -0.001318
+      }
+    },
+    "PsyCpAirFnW": {
+      "total_time": 0.011516,
+      "call_count": 38713,
+      "avg_time_per_call": 0.0,
+      "min_time": 0.001,
+      "max_time": 0.01981,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.0,
+      "hybrid_metrics": {
+        "baseline_time": 0.012,
+        "thread_improvement_factor": 2.7,
+        "thread_efficiency": 0.52,
+        "contention_factor": 1.8,
+        "effective_thread_improvement": 1.88,
+        "net_performance_ratio": 0.96,
+        "net_effect": "slight_loss",
+        "time_saved_from_threading": 0.005631,
+        "time_lost_to_contention": 0.005096,
+        "net_time_change": -0.000535
+      }
+    },
+    "PsyTsatFnHPb": {
+      "total_time": 0.021867,
+      "call_count": 27814,
+      "avg_time_per_call": 1e-06,
+      "min_time": 0.001,
+      "max_time": 0.017617,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.0,
+      "hybrid_metrics": {
+        "baseline_time": 0.018,
+        "thread_improvement_factor": 2.6,
+        "thread_efficiency": 0.5,
+        "contention_factor": 2.1,
+        "effective_thread_improvement": 1.8,
+        "net_performance_ratio": 1.17,
+        "net_effect": "slight_loss",
+        "time_saved_from_threading": 0.008,
+        "time_lost_to_contention": 0.011,
+        "net_time_change": 0.003
+      }
+    },
+    "POLYF": {
+      "total_time": 0.007839,
+      "call_count": 128193,
+      "avg_time_per_call": 0.0,
+      "min_time": 0.001,
+      "max_time": 0.016404,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.0,
+      "hybrid_metrics": {
+        "baseline_time": 0.008,
+        "thread_improvement_factor": 3.2,
+        "thread_efficiency": 0.6,
+        "contention_factor": 2.3,
+        "effective_thread_improvement": 2.32,
+        "net_performance_ratio": 0.99,
+        "net_effect": "slight_loss",
+        "time_saved_from_threading": 0.004552,
+        "time_lost_to_contention": 0.004483,
+        "net_time_change": -6.9e-05
+      }
+    },
+    "CurveValue": {
+      "total_time": 0.012202,
+      "call_count": 87537,
+      "avg_time_per_call": 0.0,
+      "min_time": 0.001,
+      "max_time": 0.017884,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.0,
+      "hybrid_metrics": {
+        "baseline_time": 0.012,
+        "thread_improvement_factor": 3.0,
+        "thread_efficiency": 0.58,
+        "contention_factor": 2.2,
+        "effective_thread_improvement": 2.16,
+        "net_performance_ratio": 1.02,
+        "net_effect": "slight_loss",
+        "time_saved_from_threading": 0.006444,
+        "time_lost_to_contention": 0.006667,
+        "net_time_change": 0.000222
+      }
+    },
+    "TableLookup": {
+      "total_time": 0.036784,
+      "call_count": 69470,
+      "avg_time_per_call": 1e-06,
+      "min_time": 0.001,
+      "max_time": 0.01106,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.01,
+      "hybrid_metrics": {
+        "baseline_time": 0.025,
+        "thread_improvement_factor": 2.4,
+        "thread_efficiency": 0.5,
+        "contention_factor": 2.5,
+        "effective_thread_improvement": 1.7,
+        "net_performance_ratio": 1.47,
+        "net_effect": "loss",
+        "time_saved_from_threading": 0.010294,
+        "time_lost_to_contention": 0.022059,
+        "net_time_change": 0.011765
+      }
+    },
+    "RegularQn": {
+      "total_time": 0.045882,
+      "call_count": 33407,
+      "avg_time_per_call": 1e-06,
+      "min_time": 0.001,
+      "max_time": 0.013491,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.01,
+      "hybrid_metrics": {
+        "baseline_time": 0.035,
+        "thread_improvement_factor": 2.2,
+        "thread_efficiency": 0.48,
+        "contention_factor": 2.1,
+        "effective_thread_improvement": 1.58,
+        "net_performance_ratio": 1.33,
+        "net_effect": "slight_loss",
+        "time_saved_from_threading": 0.012792,
+        "time_lost_to_contention": 0.024429,
+        "net_time_change": 0.011637
+      }
+    }
+  },
+  "summary": {
+    "total_simulation_time": 514.743,
+    "baseline_simulation_time": 385.895,
+    "net_performance_change_percent": 33.4,
+    "overall_performance_ratio": 1.33,
+    "total_function_calls": 540529,
+    "threading_analysis": {
+      "time_saved_from_threading": 155.26,
+      "time_lost_to_contention": 280.814,
+      "net_time_change": 128.848,
+      "threading_efficiency_degradation": "25%"
+    },
+    "top_5_time_consumers": [
+      {
+        "function": "SimulateHVAC",
+        "time": 62.987287,
+        "percentage": 12.24,
+        "net_effect": "mixed",
+        "net_change_percent": 42.0
+      },
+      {
+        "function": "ManagePlantLoops",
+        "time": 51.639473,
+        "percentage": 10.03,
+        "net_effect": "loss",
+        "net_change_percent": 75.0
+      },
+      {
+        "function": "CalcHeatBalFiniteDiff",
+        "time": 28.36292,
+        "percentage": 5.51,
+        "net_effect": "mixed",
+        "net_change_percent": -8.0
+      },
+      {
+        "function": "GetInput",
+        "time": 28.26,
+        "percentage": 5.49,
+        "net_effect": "loss",
+        "net_change_percent": 80.0
+      },
+      {
+        "function": "UpdateDataandReport",
+        "time": 27.730588,
+        "percentage": 5.39,
+        "net_effect": "loss",
+        "net_change_percent": 129.0
+      }
+    ],
+    "biggest_net_gainers": [
+      {
+        "function": "CalcZoneAirLoads",
+        "time_saved": 3.434459,
+        "improvement_percent": 16.0
+      },
+      {
+        "function": "CalcWindowHeatBalance",
+        "time_saved": 3.020339,
+        "improvement_percent": 15.0
+      },
+      {
+        "function": "CalcHeatBalFiniteDiff",
+        "time_saved": 2.443228,
+        "improvement_percent": 8.0
+      },
+      {
+        "function": "CalcHeatBalConductionTransferFunction",
+        "time_saved": 1.643838,
+        "improvement_percent": 6.0
+      },
+      {
+        "function": "CalcInteriorSurfaceTemp",
+        "time_saved": 1.270922,
+        "improvement_percent": 11.0
+      }
+    ],
+    "biggest_net_losers": [
+      {
+        "function": "ManagePlantLoops",
+        "time_added": 21.675,
+        "degradation_percent": 75.0
+      },
+      {
+        "function": "SimulateHVAC",
+        "time_added": 18.935135,
+        "degradation_percent": 42.0
+      },
+      {
+        "function": "UpdateDataandReport",
+        "time_added": 16.040367,
+        "degradation_percent": 129.0
+      },
+      {
+        "function": "WriteOutputToSQLite",
+        "time_added": 14.5,
+        "degradation_percent": 167.0
+      },
+      {
+        "function": "GetInput",
+        "time_added": 12.56,
+        "degradation_percent": 80.0
+      }
+    ]
+  }
+}

@@ -1,0 +1,301 @@
+{
+  "metadata": {
+    "created_from_baseline": "energyplus_profiling_data.json",
+    "created_from_measurement": "energyplus_profiling_contended.json",
+    "creation_timestamp": "2025-10-17T17:17:17.129977",
+    "total_functions": 48,
+    "description": "Function ordering derived from profiling data characteristics"
+  },
+  "function_order": [
+    "GetInput",
+    "InitializeSimulation",
+    "SetupOutputVariables",
+    "SetupNodeVarsForReporting",
+    "ValidateInputData",
+    "CalcDifferenceSolarRadiation",
+    "CalcSolarRadiation",
+    "CalculateSunDirectionCosines",
+    "ManageWeather",
+    "CalcExteriorSurfaceTemp",
+    "CalcInteriorSurfaceTemp",
+    "CalcWindowHeatBalance",
+    "CalcZoneAirLoads",
+    "ManageZoneEquipment",
+    "ReportSurfaceHeatBalance",
+    "SimulateInternalHeatGains",
+    "CalcHeatBalConductionTransferFunction",
+    "CalcHeatBalFiniteDiff",
+    "ReportAirHeatBalance",
+    "CalcAirLoopSplitter",
+    "CalcBoilerModel",
+    "CalcCoolingCoil",
+    "CalcFanSystemTemperatures",
+    "CalcHeatingCoil",
+    "SimulateAirLoopComponents",
+    "SimulateChillers",
+    "SimulateCoils",
+    "SimulateHVAC",
+    "SimulatePumps",
+    "CalcPlantValves",
+    "ManagePlantLoops",
+    "SimulatePlantProfile",
+    "UpdatePlantLoopInterface",
+    "POLYF",
+    "CurveValue",
+    "TableLookup",
+    "RegularQn",
+    "InterpolateBetweenTwoValues",
+    "PsyHFnTdbW",
+    "PsyRhoAirFnPbTdbW",
+    "PsyCpAirFnW",
+    "PsyTsatFnHPb",
+    "CalcTariffEvaluation",
+    "EconomicTariffManager",
+    "UpdateUtilityBills",
+    "UpdateDataandReport",
+    "UpdateMeterReporting",
+    "WriteOutputToSQLite"
+  ],
+  "categories": {
+    "GetInput": {
+      "category": "initialization",
+      "call_count": 1,
+      "total_time": 15.7
+    },
+    "InitializeSimulation": {
+      "category": "initialization",
+      "call_count": 1,
+      "total_time": 8.3
+    },
+    "SetupOutputVariables": {
+      "category": "initialization",
+      "call_count": 1,
+      "total_time": 3.1
+    },
+    "SetupNodeVarsForReporting": {
+      "category": "initialization",
+      "call_count": 1,
+      "total_time": 2.4
+    },
+    "ValidateInputData": {
+      "category": "initialization",
+      "call_count": 1,
+      "total_time": 4.8
+    },
+    "CalcDifferenceSolarRadiation": {
+      "category": "weather_solar",
+      "call_count": 1204,
+      "total_time": 4.045365
+    },
+    "CalcSolarRadiation": {
+      "category": "weather_solar",
+      "call_count": 1196,
+      "total_time": 13.514741
+    },
+    "CalculateSunDirectionCosines": {
+      "category": "weather_solar",
+      "call_count": 8874,
+      "total_time": 0.798786
+    },
+    "ManageWeather": {
+      "category": "weather_solar",
+      "call_count": 8360,
+      "total_time": 1.835414
+    },
+    "CalcExteriorSurfaceTemp": {
+      "category": "zone_surface",
+      "call_count": 1041,
+      "total_time": 8.550315
+    },
+    "CalcInteriorSurfaceTemp": {
+      "category": "zone_surface",
+      "call_count": 1025,
+      "total_time": 10.945318
+    },
+    "CalcWindowHeatBalance": {
+      "category": "zone_surface",
+      "call_count": 952,
+      "total_time": 19.120148
+    },
+    "CalcZoneAirLoads": {
+      "category": "zone_surface",
+      "call_count": 1169,
+      "total_time": 21.956302
+    },
+    "ManageZoneEquipment": {
+      "category": "zone_surface",
+      "call_count": 1220,
+      "total_time": 15.046205
+    },
+    "ReportSurfaceHeatBalance": {
+      "category": "zone_surface",
+      "call_count": 187,
+      "total_time": 4.594081
+    },
+    "SimulateInternalHeatGains": {
+      "category": "zone_surface",
+      "call_count": 1141,
+      "total_time": 7.227717
+    },
+    "CalcHeatBalConductionTransferFunction": {
+      "category": "heat_balance",
+      "call_count": 689,
+      "total_time": 26.201112
+    },
+    "CalcHeatBalFiniteDiff": {
+      "category": "heat_balance",
+      "call_count": 724,
+      "total_time": 32.744797
+    },
+    "ReportAirHeatBalance": {
+      "category": "heat_balance",
+      "call_count": 195,
+      "total_time": 3.880595
+    },
+    "CalcAirLoopSplitter": {
+      "category": "hvac_systems",
+      "call_count": 1147,
+      "total_time": 2.079732
+    },
+    "CalcBoilerModel": {
+      "category": "hvac_systems",
+      "call_count": 392,
+      "total_time": 7.028593
+    },
+    "CalcCoolingCoil": {
+      "category": "hvac_systems",
+      "call_count": 965,
+      "total_time": 5.328246
+    },
+    "CalcFanSystemTemperatures": {
+      "category": "hvac_systems",
+      "call_count": 1047,
+      "total_time": 3.499547
+    },
+    "CalcHeatingCoil": {
+      "category": "hvac_systems",
+      "call_count": 843,
+      "total_time": 4.135002
+    },
+    "SimulateAirLoopComponents": {
+      "category": "hvac_systems",
+      "call_count": 936,
+      "total_time": 18.623157
+    },
+    "SimulateChillers": {
+      "category": "hvac_systems",
+      "call_count": 433,
+      "total_time": 12.066058
+    },
+    "SimulateCoils": {
+      "category": "hvac_systems",
+      "call_count": 1060,
+      "total_time": 8.763798
+    },
+    "SimulateHVAC": {
+      "category": "hvac_systems",
+      "call_count": 858,
+      "total_time": 47.810693
+    },
+    "SimulatePumps": {
+      "category": "hvac_systems",
+      "call_count": 744,
+      "total_time": 3.046061
+    },
+    "CalcPlantValves": {
+      "category": "plant_systems",
+      "call_count": 405,
+      "total_time": 1.928149
+    },
+    "ManagePlantLoops": {
+      "category": "plant_systems",
+      "call_count": 632,
+      "total_time": 28.589483
+    },
+    "SimulatePlantProfile": {
+      "category": "plant_systems",
+      "call_count": 778,
+      "total_time": 3.691953
+    },
+    "UpdatePlantLoopInterface": {
+      "category": "plant_systems",
+      "call_count": 851,
+      "total_time": 2.151851
+    },
+    "POLYF": {
+      "category": "math_utilities",
+      "call_count": 127094,
+      "total_time": 0.007956
+    },
+    "CurveValue": {
+      "category": "math_utilities",
+      "call_count": 87357,
+      "total_time": 0.012188
+    },
+    "TableLookup": {
+      "category": "math_utilities",
+      "call_count": 65962,
+      "total_time": 0.024626
+    },
+    "RegularQn": {
+      "category": "math_utilities",
+      "call_count": 35317,
+      "total_time": 0.034131
+    },
+    "InterpolateBetweenTwoValues": {
+      "category": "math_utilities",
+      "call_count": 16054,
+      "total_time": 0.050519
+    },
+    "PsyHFnTdbW": {
+      "category": "psychrometric",
+      "call_count": 51061,
+      "total_time": 0.015054
+    },
+    "PsyRhoAirFnPbTdbW": {
+      "category": "psychrometric",
+      "call_count": 44290,
+      "total_time": 0.019698
+    },
+    "PsyCpAirFnW": {
+      "category": "psychrometric",
+      "call_count": 36463,
+      "total_time": 0.012356
+    },
+    "PsyTsatFnHPb": {
+      "category": "psychrometric",
+      "call_count": 26620,
+      "total_time": 0.018093
+    },
+    "CalcTariffEvaluation": {
+      "category": "economics",
+      "call_count": 117,
+      "total_time": 4.867167
+    },
+    "EconomicTariffManager": {
+      "category": "economics",
+      "call_count": 111,
+      "total_time": 3.829169
+    },
+    "UpdateUtilityBills": {
+      "category": "economics",
+      "call_count": 140,
+      "total_time": 2.339937
+    },
+    "UpdateDataandReport": {
+      "category": "output_reporting",
+      "call_count": 206,
+      "total_time": 12.911658
+    },
+    "UpdateMeterReporting": {
+      "category": "output_reporting",
+      "call_count": 200,
+      "total_time": 2.048577
+    },
+    "WriteOutputToSQLite": {
+      "category": "output_reporting",
+      "call_count": 188,
+      "total_time": 8.532774
+    }
+  }
+}

@@ -1,0 +1,523 @@
+{
+  "metadata": {
+    "building_type": "Commercial Office",
+    "climate_zone": "4A",
+    "simulation_period": "Annual",
+    "timestep": "4 per hour",
+    "total_simulation_time": 211.172593,
+    "system_conditions": {
+      "concurrent_simulations": 1,
+      "threads_per_simulation": 2,
+      "total_threads": 2,
+      "estimated_memory_usage_gb": 2.1,
+      "cpu_utilization_percent": 24,
+      "scheduler_scenario": "Low contention",
+      "resource_contention_level": "Low"
+    },
+    "performance_factors": {
+      "memory_contention_factor": 1.0,
+      "io_contention_factor": 1.0,
+      "cache_contention_factor": 1.0,
+      "cpu_efficiency_factor": 1.494,
+      "context_switch_penalty": 1.002
+    }
+  },
+  "timestamp": "2025-10-18T10:33:16.665311",
+  "functions": {
+    "SimulateHVAC": {
+      "total_time": 19.024308,
+      "call_count": 842,
+      "avg_time_per_call": 0.022594,
+      "min_time": 0.002498,
+      "max_time": 0.173521,
+      "std_deviation": 0.00894,
+      "percentage_of_total": 9.01
+    },
+    "CalcAirLoopSplitter": {
+      "total_time": 1.228914,
+      "call_count": 1147,
+      "avg_time_per_call": 0.001071,
+      "min_time": 0.000209,
+      "max_time": 0.004149,
+      "std_deviation": 0.000362,
+      "percentage_of_total": 0.58
+    },
+    "SimulateAirLoopComponents": {
+      "total_time": 4.724768,
+      "call_count": 952,
+      "avg_time_per_call": 0.004963,
+      "min_time": 0.001472,
+      "max_time": 0.032505,
+      "std_deviation": 0.001926,
+      "percentage_of_total": 2.24
+    },
+    "CalcFanSystemTemperatures": {
+      "total_time": 2.033099,
+      "call_count": 1096,
+      "avg_time_per_call": 0.001855,
+      "min_time": 0.000446,
+      "max_time": 0.01172,
+      "std_deviation": 0.000684,
+      "percentage_of_total": 0.96
+    },
+    "SimulateCoils": {
+      "total_time": 5.479691,
+      "call_count": 992,
+      "avg_time_per_call": 0.005524,
+      "min_time": 0.001091,
+      "max_time": 0.032592,
+      "std_deviation": 0.002145,
+      "percentage_of_total": 2.59
+    },
+    "CalcCoolingCoil": {
+      "total_time": 3.210991,
+      "call_count": 876,
+      "avg_time_per_call": 0.003666,
+      "min_time": 0.000589,
+      "max_time": 0.015173,
+      "std_deviation": 0.00093,
+      "percentage_of_total": 1.52
+    },
+    "CalcHeatingCoil": {
+      "total_time": 2.572856,
+      "call_count": 836,
+      "avg_time_per_call": 0.003078,
+      "min_time": 0.000585,
+      "max_time": 0.023893,
+      "std_deviation": 0.000792,
+      "percentage_of_total": 1.22
+    },
+    "SimulateChillers": {
+      "total_time": 11.995696,
+      "call_count": 426,
+      "avg_time_per_call": 0.028159,
+      "min_time": 0.004537,
+      "max_time": 0.110109,
+      "std_deviation": 0.008864,
+      "percentage_of_total": 5.68
+    },
+    "CalcBoilerModel": {
+      "total_time": 7.095828,
+      "call_count": 364,
+      "avg_time_per_call": 0.019494,
+      "min_time": 0.00333,
+      "max_time": 0.10767,
+      "std_deviation": 0.007675,
+      "percentage_of_total": 3.36
+    },
+    "SimulatePumps": {
+      "total_time": 1.829191,
+      "call_count": 750,
+      "avg_time_per_call": 0.002439,
+      "min_time": 0.000715,
+      "max_time": 0.007786,
+      "std_deviation": 0.000623,
+      "percentage_of_total": 0.87
+    },
+    "ManageZoneEquipment": {
+      "total_time": 3.671434,
+      "call_count": 1200,
+      "avg_time_per_call": 0.00306,
+      "min_time": 0.00047,
+      "max_time": 0.015068,
+      "std_deviation": 0.000721,
+      "percentage_of_total": 1.74
+    },
+    "CalcZoneAirLoads": {
+      "total_time": 5.498976,
+      "call_count": 1172,
+      "avg_time_per_call": 0.004692,
+      "min_time": 0.000983,
+      "max_time": 0.026752,
+      "std_deviation": 0.001464,
+      "percentage_of_total": 2.6
+    },
+    "SimulateInternalHeatGains": {
+      "total_time": 4.253982,
+      "call_count": 1088,
+      "avg_time_per_call": 0.00391,
+      "min_time": 0.000426,
+      "max_time": 0.020224,
+      "std_deviation": 0.001048,
+      "percentage_of_total": 2.01
+    },
+    "CalcWindowHeatBalance": {
+      "total_time": 7.958281,
+      "call_count": 917,
+      "avg_time_per_call": 0.008679,
+      "min_time": 0.001095,
+      "max_time": 0.058211,
+      "std_deviation": 0.002421,
+      "percentage_of_total": 3.77
+    },
+    "CalcExteriorSurfaceTemp": {
+      "total_time": 5.45847,
+      "call_count": 1029,
+      "avg_time_per_call": 0.005305,
+      "min_time": 0.000753,
+      "max_time": 0.026234,
+      "std_deviation": 0.001708,
+      "percentage_of_total": 2.58
+    },
+    "CalcInteriorSurfaceTemp": {
+      "total_time": 7.009749,
+      "call_count": 1049,
+      "avg_time_per_call": 0.006682,
+      "min_time": 0.001471,
+      "max_time": 0.052559,
+      "std_deviation": 0.002215,
+      "percentage_of_total": 3.32
+    },
+    "CalcHeatBalFiniteDiff": {
+      "total_time": 12.941804,
+      "call_count": 733,
+      "avg_time_per_call": 0.017656,
+      "min_time": 0.001954,
+      "max_time": 0.089792,
+      "std_deviation": 0.006051,
+      "percentage_of_total": 6.13
+    },
+    "CalcHeatBalConductionTransferFunction": {
+      "total_time": 10.088007,
+      "call_count": 678,
+      "avg_time_per_call": 0.014879,
+      "min_time": 0.002334,
+      "max_time": 0.089323,
+      "std_deviation": 0.005743,
+      "percentage_of_total": 4.78
+    },
+    "ManageWeather": {
+      "total_time": 1.0754,
+      "call_count": 8728,
+      "avg_time_per_call": 0.000123,
+      "min_time": 1.4e-05,
+      "max_time": 0.000891,
+      "std_deviation": 3.4e-05,
+      "percentage_of_total": 0.51
+    },
+    "CalcSolarRadiation": {
+      "total_time": 3.310516,
+      "call_count": 1217,
+      "avg_time_per_call": 0.00272,
+      "min_time": 0.000394,
+      "max_time": 0.008871,
+      "std_deviation": 0.000627,
+      "percentage_of_total": 1.57
+    },
+    "CalcDifferenceSolarRadiation": {
+      "total_time": 2.530329,
+      "call_count": 1076,
+      "avg_time_per_call": 0.002352,
+      "min_time": 0.000371,
+      "max_time": 0.010608,
+      "std_deviation": 0.000497,
+      "percentage_of_total": 1.2
+    },
+    "InterpolateBetweenTwoValues": {
+      "total_time": 0.029961,
+      "call_count": 14799,
+      "avg_time_per_call": 2e-06,
+      "min_time": 0.0,
+      "max_time": 1.6e-05,
+      "std_deviation": 1e-06,
+      "percentage_of_total": 0.01
+    },
+    "CalculateSunDirectionCosines": {
+      "total_time": 0.494864,
+      "call_count": 8114,
+      "avg_time_per_call": 6.1e-05,
+      "min_time": 8e-06,
+      "max_time": 0.000396,
+      "std_deviation": 2.4e-05,
+      "percentage_of_total": 0.23
+    },
+    "ManagePlantLoops": {
+      "total_time": 28.746006,
+      "call_count": 636,
+      "avg_time_per_call": 0.045198,
+      "min_time": 0.011751,
+      "max_time": 0.15872,
+      "std_deviation": 0.015601,
+      "percentage_of_total": 13.61
+    },
+    "SimulatePlantProfile": {
+      "total_time": 2.338886,
+      "call_count": 693,
+      "avg_time_per_call": 0.003375,
+      "min_time": 0.00045,
+      "max_time": 0.014491,
+      "std_deviation": 0.000832,
+      "percentage_of_total": 1.11
+    },
+    "UpdatePlantLoopInterface": {
+      "total_time": 1.314987,
+      "call_count": 866,
+      "avg_time_per_call": 0.001518,
+      "min_time": 0.00028,
+      "max_time": 0.011201,
+      "std_deviation": 0.000389,
+      "percentage_of_total": 0.62
+    },
+    "CalcPlantValves": {
+      "total_time": 1.184005,
+      "call_count": 427,
+      "avg_time_per_call": 0.002773,
+      "min_time": 0.000742,
+      "max_time": 0.019235,
+      "std_deviation": 0.000855,
+      "percentage_of_total": 0.56
+    },
+    "CalcTariffEvaluation": {
+      "total_time": 3.121134,
+      "call_count": 119,
+      "avg_time_per_call": 0.026228,
+      "min_time": 0.002771,
+      "max_time": 0.127044,
+      "std_deviation": 0.0091,
+      "percentage_of_total": 1.48
+    },
+    "UpdateUtilityBills": {
+      "total_time": 1.349678,
+      "call_count": 142,
+      "avg_time_per_call": 0.009505,
+      "min_time": 0.001041,
+      "max_time": 0.04731,
+      "std_deviation": 0.002641,
+      "percentage_of_total": 0.64
+    },
+    "EconomicTariffManager": {
+      "total_time": 2.304138,
+      "call_count": 104,
+      "avg_time_per_call": 0.022155,
+      "min_time": 0.00482,
+      "max_time": 0.156427,
+      "std_deviation": 0.004572,
+      "percentage_of_total": 1.09
+    },
+    "UpdateDataandReport": {
+      "total_time": 9.036199,
+      "call_count": 186,
+      "avg_time_per_call": 0.048582,
+      "min_time": 0.006788,
+      "max_time": 0.278274,
+      "std_deviation": 0.018359,
+      "percentage_of_total": 4.28
+    },
+    "WriteOutputToSQLite": {
+      "total_time": 6.501504,
+      "call_count": 177,
+      "avg_time_per_call": 0.036732,
+      "min_time": 0.004783,
+      "max_time": 0.293811,
+      "std_deviation": 0.008761,
+      "percentage_of_total": 3.08
+    },
+    "ReportSurfaceHeatBalance": {
+      "total_time": 3.532912,
+      "call_count": 179,
+      "avg_time_per_call": 0.019737,
+      "min_time": 0.003984,
+      "max_time": 0.136111,
+      "std_deviation": 0.006114,
+      "percentage_of_total": 1.67
+    },
+    "ReportAirHeatBalance": {
+      "total_time": 3.118005,
+      "call_count": 178,
+      "avg_time_per_call": 0.017517,
+      "min_time": 0.003427,
+      "max_time": 0.133748,
+      "std_deviation": 0.00578,
+      "percentage_of_total": 1.48
+    },
+    "UpdateMeterReporting": {
+      "total_time": 1.274041,
+      "call_count": 208,
+      "avg_time_per_call": 0.006125,
+      "min_time": 0.001164,
+      "max_time": 0.031099,
+      "std_deviation": 0.002311,
+      "percentage_of_total": 0.6
+    },
+    "GetInput": {
+      "total_time": 12.51661,
+      "call_count": 1,
+      "avg_time_per_call": 12.51661,
+      "min_time": 1.325252,
+      "max_time": 44.216499,
+      "std_deviation": 4.205597,
+      "percentage_of_total": 5.93
+    },
+    "InitializeSimulation": {
+      "total_time": 4.771109,
+      "call_count": 1,
+      "avg_time_per_call": 4.771109,
+      "min_time": 0.957018,
+      "max_time": 24.937268,
+      "std_deviation": 1.617929,
+      "percentage_of_total": 2.26
+    },
+    "SetupNodeVarsForReporting": {
+      "total_time": 1.45857,
+      "call_count": 1,
+      "avg_time_per_call": 1.45857,
+      "min_time": 0.428877,
+      "max_time": 7.769298,
+      "std_deviation": 0.472696,
+      "percentage_of_total": 0.69
+    },
+    "SetupOutputVariables": {
+      "total_time": 1.921443,
+      "call_count": 1,
+      "avg_time_per_call": 1.921443,
+      "min_time": 0.556504,
+      "max_time": 7.08467,
+      "std_deviation": 0.735948,
+      "percentage_of_total": 0.91
+    },
+    "ValidateInputData": {
+      "total_time": 3.040411,
+      "call_count": 1,
+      "avg_time_per_call": 3.040411,
+      "min_time": 0.662774,
+      "max_time": 23.639236,
+      "std_deviation": 0.610367,
+      "percentage_of_total": 1.44
+    },
+    "PsyRhoAirFnPbTdbW": {
+      "total_time": 0.019533,
+      "call_count": 44680,
+      "avg_time_per_call": 0.0,
+      "min_time": 0.0,
+      "max_time": 3e-06,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.01
+    },
+    "PsyHFnTdbW": {
+      "total_time": 0.014763,
+      "call_count": 49010,
+      "avg_time_per_call": 0.0,
+      "min_time": 0.0,
+      "max_time": 1e-06,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.01
+    },
+    "PsyCpAirFnW": {
+      "total_time": 0.006986,
+      "call_count": 37769,
+      "avg_time_per_call": 0.0,
+      "min_time": 0.0,
+      "max_time": 1e-06,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.0
+    },
+    "PsyTsatFnHPb": {
+      "total_time": 0.010489,
+      "call_count": 26732,
+      "avg_time_per_call": 0.0,
+      "min_time": 0.0,
+      "max_time": 2e-06,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.0
+    },
+    "POLYF": {
+      "total_time": 0.007585,
+      "call_count": 115479,
+      "avg_time_per_call": 0.0,
+      "min_time": 0.0,
+      "max_time": 1e-06,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.0
+    },
+    "CurveValue": {
+      "total_time": 0.011292,
+      "call_count": 83630,
+      "avg_time_per_call": 0.0,
+      "min_time": 0.0,
+      "max_time": 1e-06,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.01
+    },
+    "TableLookup": {
+      "total_time": 0.023169,
+      "call_count": 68817,
+      "avg_time_per_call": 0.0,
+      "min_time": 0.0,
+      "max_time": 2e-06,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.01
+    },
+    "RegularQn": {
+      "total_time": 0.032022,
+      "call_count": 34688,
+      "avg_time_per_call": 1e-06,
+      "min_time": 0.0,
+      "max_time": 6e-06,
+      "std_deviation": 0.0,
+      "percentage_of_total": 0.02
+    }
+  },
+  "summary": {
+    "total_simulation_time": 211.173,
+    "baseline_simulation_time": 388.23,
+    "performance_ratio": 0.544,
+    "total_function_calls": 514806,
+    "concurrent_simulations": 1,
+    "threads_per_simulation": 2,
+    "total_threads": 2,
+    "top_5_time_consumers": [
+      {
+        "function": "ManagePlantLoops",
+        "time": 28.746006,
+        "percentage": 13.61
+      },
+      {
+        "function": "SimulateHVAC",
+        "time": 19.024308,
+        "percentage": 9.01
+      },
+      {
+        "function": "CalcHeatBalFiniteDiff",
+        "time": 12.941804,
+        "percentage": 6.13
+      },
+      {
+        "function": "GetInput",
+        "time": 12.51661,
+        "percentage": 5.93
+      },
+      {
+        "function": "SimulateChillers",
+        "time": 11.995696,
+        "percentage": 5.68
+      }
+    ],
+    "most_called_functions": [
+      {
+        "function": "POLYF",
+        "calls": 115479,
+        "avg_time": 0.0
+      },
+      {
+        "function": "CurveValue",
+        "calls": 83630,
+        "avg_time": 0.0
+      },
+      {
+        "function": "TableLookup",
+        "calls": 68817,
+        "avg_time": 0.0
+      },
+      {
+        "function": "PsyHFnTdbW",
+        "calls": 49010,
+        "avg_time": 0.0
+      },
+      {
+        "function": "PsyRhoAirFnPbTdbW",
+        "calls": 44680,
+        "avg_time": 0.0
+      }
+    ]
+  }
+}
