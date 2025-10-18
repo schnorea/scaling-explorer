@@ -6,8 +6,23 @@ A GUI application for analyzing and visualizing EnergyPlus simulation performanc
 
 ### Data Management
 - **Project File Loading**: Load all simulation datasets with a single project JSON file
+- **Auto-Detection**: Automatically loads `energyplus_project.json` if found in current directory
+- **Multiple Access Methods**: Menu bar (File → Load Project), toolbar button, keyboard shortcut (Ctrl+O)
 - **Real Data Visualization**: Display actual EnergyPlus function performance data
 - **Matrix Layout**: 7×6 grid showing thread counts (1-32) vs concurrent simulations (1-64)
+
+### User Interface
+- **Menu Bar**: Full menu system with File, View, Analysis, and Help menus
+- **Toolbar**: Quick access buttons with icons for common operations
+- **Keyboard Shortcuts**: 
+  - Ctrl+O: Load project file
+  - Ctrl+S: Export chart
+  - F5: Update chart
+  - Ctrl+D: Clear all selections
+  - Ctrl+Q: Exit application
+- **Resizable Panels**: Adjustable chart and data selection areas
+- **Scrollable Content**: Full access to all datasets regardless of window size
+- **Interactive Selection**: Checkboxes for dataset selection, radio buttons for baseline selection
 
 ### Analysis Capabilities
 - **Baseline Comparison Modes**:
@@ -16,35 +31,48 @@ A GUI application for analyzing and visualizing EnergyPlus simulation performanc
   - Column: Compare datasets with same simulation count
 - **Performance Visualization**: Overlaid bar charts showing function performance ratios
 - **Real-time Statistics**: Detailed analysis panel with performance metrics
-
-### User Interface
-- **Resizable Panels**: Adjustable chart and data selection areas
-- **Scrollable Content**: Full access to all datasets regardless of window size
-- **Interactive Selection**: Checkboxes for dataset selection, radio buttons for baseline selection
+- **Chart Export**: Save charts as PNG, PDF, or SVG files
 - **Function Filtering**: Click chart bars to select/deselect specific functions
 
 ## Usage
 
 ### 1. Load Project Data
-1. Launch the application
-2. Click "Load Project Data" button
-3. Select the `energyplus_project.json` file
-4. Application will load all 42 simulation datasets
+
+**Automatic Loading** (Easiest):
+- Simply launch the application
+- If `energyplus_project.json` exists in the current directory, it will auto-load
+- All 42 datasets will be loaded automatically
+
+**Manual Loading**:
+- Use any of these methods:
+  - Click "📁 Load Project" in the toolbar
+  - Use menu: File → Load Project... 
+  - Press Ctrl+O keyboard shortcut
+- Select the `energyplus_project.json` file
+- Application will load all referenced simulation datasets
 
 ### 2. Select Datasets for Analysis
 - Use checkboxes in the matrix to select datasets for comparison
 - Each cell shows: execution time, selection checkbox, baseline radio button
-- Use "Select Row" or "Select Column" for quick selections
+- Quick selection options:
+  - "→ Select Row" button: Select all datasets with same thread count
+  - "↓ Select Column" button: Select all datasets with same simulation count
+  - Menu: Analysis → Clear All Selections (or Ctrl+D)
 
 ### 3. Set Baseline for Comparison
-- Choose baseline mode: Single, Row, or Column
-- Select appropriate baseline using radio buttons
-- Baseline determines what performance ratios are calculated against
+- Choose baseline mode using toolbar radio buttons or Analysis menu:
+  - **Single**: Compare all to one specific dataset
+  - **Row**: Compare datasets within same thread count
+  - **Column**: Compare datasets within same simulation count
+- Select appropriate baseline using radio buttons in the matrix
 
 ### 4. Analyze Results
-- Click "Update Chart" to visualize selected datasets
+- Click "📊 Update Chart" (or press F5) to visualize selected datasets
 - View real-time statistics in the right panel
-- Toggle function labels and statistics panel as needed
+- Toggle display options:
+  - Show/hide function labels on chart
+  - Show/hide statistics panel
+- Export results: "💾 Export Chart" (or Ctrl+S) for PNG, PDF, or SVG
 
 ## Project File Structure
 

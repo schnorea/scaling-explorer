@@ -47,13 +47,19 @@ class SimulationExplorerUI:
     def setup_ui(self):
         """Create the main UI layout with resizable panels"""
         
+        # Create menu bar
+        self.create_menu_bar()
+        
+        # Create toolbar
+        self.create_toolbar()
+        
         # Configure root window for resizing
-        self.root.grid_rowconfigure(0, weight=1)
+        self.root.grid_rowconfigure(1, weight=1)  # Changed from 0 to 1 to account for toolbar
         self.root.grid_columnconfigure(0, weight=1)
         
         # Create main horizontal paned window for resizable panels
         main_paned = ttk.PanedWindow(self.root, orient=tk.HORIZONTAL)
-        main_paned.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), padx=10, pady=10)
+        main_paned.grid(row=1, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), padx=10, pady=10)
         
         # Left panel: Chart and data matrix (will be further divided vertically)
         left_panel = ttk.Frame(main_paned)
@@ -82,6 +88,122 @@ class SimulationExplorerUI:
         
         # Initialize with some default selections
         self.initialize_defaults()
+        
+        # Auto-load project file if it exists in current directory
+        self.auto_load_project_file()
+    
+    def create_menu_bar(self):
+        """Create the application menu bar"""
+        
+        # Create menu bar
+        menubar = tk.Menu(self.root)
+        self.root.config(menu=menubar)
+        
+        # File menu
+        file_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="File", menu=file_menu)
+        file_menu.add_command(label="Load Project...", command=self.load_project_file, accelerator="Ctrl+O")
+        file_menu.add_separator()
+        file_menu.add_command(label="Export Chart...", command=self.export_chart, accelerator="Ctrl+S")
+        file_menu.add_separator()
+        file_menu.add_command(label="Exit", command=self.root.quit, accelerator="Ctrl+Q")
+        
+        # View menu
+        view_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="View", menu=view_menu)
+        view_menu.add_checkbutton(label="Show Statistics Panel", variable=self.show_stats_panel, 
+                                 command=self.toggle_stats_panel)
+        view_menu.add_checkbutton(label="Show Function Labels", variable=self.show_function_labels,
+                                 command=self.update_chart)
+        
+        # Analysis menu
+        analysis_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="Analysis", menu=analysis_menu)
+        analysis_menu.add_command(label="Update Chart", command=self.update_chart, accelerator="F5")
+        analysis_menu.add_command(label="Clear All Selections", command=self.clear_selections, accelerator="Ctrl+D")
+        analysis_menu.add_separator()
+        
+        # Baseline mode submenu
+        baseline_menu = tk.Menu(analysis_menu, tearoff=0)
+        analysis_menu.add_cascade(label="Baseline Mode", menu=baseline_menu)
+        baseline_menu.add_radiobutton(label="Single Dataset", variable=self.baseline_mode, 
+                                     value="single", command=self.update_comparison_mode)
+        baseline_menu.add_radiobutton(label="Row Comparison", variable=self.baseline_mode,
+                                     value="row", command=self.update_comparison_mode)
+        baseline_menu.add_radiobutton(label="Column Comparison", variable=self.baseline_mode,
+                                     value="column", command=self.update_comparison_mode)
+        
+        # Help menu
+        help_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="Help", menu=help_menu)
+        help_menu.add_command(label="About...", command=self.show_about)
+        
+        # Bind keyboard shortcuts
+        self.root.bind('<Control-o>', lambda e: self.load_project_file())
+        self.root.bind('<Control-s>', lambda e: self.export_chart())
+        self.root.bind('<Control-q>', lambda e: self.root.quit())
+        self.root.bind('<Control-d>', lambda e: self.clear_selections())
+        self.root.bind('<F5>', lambda e: self.update_chart())
+    
+    def create_toolbar(self):
+        """Create a toolbar with quick access buttons"""
+        
+        # Create toolbar frame
+        toolbar = ttk.Frame(self.root)
+        toolbar.grid(row=0, column=0, sticky=(tk.W, tk.E), padx=10, pady=(10, 0))
+        
+        # Load project button (prominent)
+        load_btn = ttk.Button(toolbar, text="📁 Load Project", 
+                             command=self.load_project_file)
+        load_btn.pack(side=tk.LEFT, padx=(0, 10))
+        
+        # Update chart button
+        update_btn = ttk.Button(toolbar, text="📊 Update Chart", 
+                               command=self.update_chart)
+        update_btn.pack(side=tk.LEFT, padx=(0, 10))
+        
+        # Export chart button
+        export_btn = ttk.Button(toolbar, text="💾 Export Chart", 
+                               command=self.export_chart)
+        export_btn.pack(side=tk.LEFT, padx=(0, 10))
+        
+        # Separator
+        ttk.Separator(toolbar, orient=tk.VERTICAL).pack(side=tk.LEFT, fill=tk.Y, padx=10)
+        
+        # Clear selections button
+        clear_btn = ttk.Button(toolbar, text="🗑️ Clear All", 
+                              command=self.clear_selections)
+        clear_btn.pack(side=tk.LEFT, padx=(0, 10))
+        
+        # Quick select buttons
+        select_row_btn = ttk.Button(toolbar, text="→ Select Row", 
+                                   command=self.select_current_row)
+        select_row_btn.pack(side=tk.LEFT, padx=(0, 5))
+        
+        select_col_btn = ttk.Button(toolbar, text="↓ Select Column", 
+                                   command=self.select_current_column)
+        select_col_btn.pack(side=tk.LEFT, padx=(0, 10))
+        
+        # Separator
+        ttk.Separator(toolbar, orient=tk.VERTICAL).pack(side=tk.LEFT, fill=tk.Y, padx=10)
+        
+        # Baseline mode quick buttons
+        ttk.Label(toolbar, text="Baseline:").pack(side=tk.LEFT, padx=(0, 5))
+        
+        single_btn = ttk.Radiobutton(toolbar, text="Single", 
+                                    variable=self.baseline_mode, value="single",
+                                    command=self.update_comparison_mode)
+        single_btn.pack(side=tk.LEFT)
+        
+        row_btn = ttk.Radiobutton(toolbar, text="Row", 
+                                 variable=self.baseline_mode, value="row",
+                                 command=self.update_comparison_mode)
+        row_btn.pack(side=tk.LEFT)
+        
+        col_btn = ttk.Radiobutton(toolbar, text="Column", 
+                                 variable=self.baseline_mode, value="column",
+                                 command=self.update_comparison_mode)
+        col_btn.pack(side=tk.LEFT)
     
     def create_chart_area(self, parent):
         """Create the matplotlib chart display area with function selection"""
@@ -937,6 +1059,55 @@ class SimulationExplorerUI:
         
         return analysis
     
+    def export_chart(self):
+        """Export the current chart as an image file"""
+        
+        if not hasattr(self, 'figure'):
+            messagebox.showwarning("Warning", "No chart available to export.")
+            return
+        
+        # Ask user for save location
+        filename = filedialog.asksaveasfilename(
+            title="Export Chart",
+            defaultextension=".png",
+            filetypes=[
+                ("PNG files", "*.png"),
+                ("PDF files", "*.pdf"), 
+                ("SVG files", "*.svg"),
+                ("All files", "*.*")
+            ]
+        )
+        
+        if filename:
+            try:
+                self.figure.savefig(filename, dpi=300, bbox_inches='tight', 
+                                   facecolor='white', edgecolor='none')
+                messagebox.showinfo("Success", f"Chart exported to:\n{filename}")
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to export chart:\n{e}")
+    
+    def show_about(self):
+        """Show about dialog"""
+        
+        about_text = """EnergyPlus Concurrent Simulation Explorer
+
+A GUI application for analyzing and visualizing EnergyPlus simulation 
+performance data across different threading and concurrency configurations.
+
+Features:
+• Load project files with multiple datasets
+• Interactive performance comparison charts  
+• Real-time statistical analysis
+• Flexible baseline comparison modes
+• Function-level performance tracking
+
+Version: 1.0
+Built with: Python, tkinter, matplotlib
+
+Use Ctrl+O to load project data and get started!"""
+        
+        messagebox.showinfo("About EnergyPlus Explorer", about_text)
+    
     def toggle_stats_panel(self):
         """Show/hide the statistics panel"""
         if self.show_stats_panel.get():
@@ -960,6 +1131,64 @@ class SimulationExplorerUI:
         self.dataset_selections[(2, 2)].set(True)  # 4 sims, 4 threads
         
         self.update_status()
+    
+    def auto_load_project_file(self):
+        """Automatically load project file if it exists in current directory"""
+        
+        # Look for the standard project file name
+        project_files = ['energyplus_project.json', 'project.json', 'data.json']
+        
+        for filename in project_files:
+            if os.path.exists(filename):
+                try:
+                    # Load project JSON
+                    with open(filename, 'r') as f:
+                        self.project_data = json.load(f)
+                    
+                    self.current_project_path = os.path.abspath(filename)
+                    project_dir = os.path.dirname(self.current_project_path)
+                    
+                    # Validate project structure
+                    if 'datasets' not in self.project_data:
+                        continue  # Try next file
+                    
+                    # Load all simulation data files
+                    self.simulation_data = {}
+                    
+                    for sim_count, thread_data in self.project_data['datasets'].items():
+                        for thread_count, data_filename in thread_data.items():
+                            # Construct full path
+                            file_path = os.path.join(project_dir, data_filename)
+                            
+                            if os.path.exists(file_path):
+                                try:
+                                    with open(file_path, 'r') as f:
+                                        data = json.load(f)
+                                    
+                                    # Map to matrix coordinates
+                                    sim_idx = self.get_sim_index(sim_count)
+                                    thread_idx = self.get_thread_index(thread_count)
+                                    
+                                    if sim_idx is not None and thread_idx is not None:
+                                        self.simulation_data[(thread_idx, sim_idx)] = data
+                                
+                                except json.JSONDecodeError:
+                                    continue  # Skip invalid files
+                    
+                    # Update the UI with real data if we loaded some
+                    if self.simulation_data:
+                        self.update_table_with_real_data()
+                        self.update_status()
+                        
+                        # Update status to show auto-loaded data
+                        project_name = self.project_data.get('project_info', {}).get('name', filename)
+                        loaded_count = len(self.simulation_data)
+                        print(f"Auto-loaded project: {project_name} ({loaded_count} datasets)")
+                        return  # Successfully loaded, stop trying other files
+                
+                except Exception as e:
+                    print(f"Failed to auto-load {filename}: {e}")
+                    continue  # Try next file
     
     def load_project_file(self):
         """Load a project JSON file that references all simulation data files"""
@@ -1224,15 +1453,21 @@ class SimulationExplorerUI:
 
 
 def main():
-    """Run the UI mockup"""
-    print("EnergyPlus Concurrent Simulation Explorer - UI Mockup")
-    print("This shows the proposed interface layout.")
-    print("\nFeatures demonstrated:")
-    print("- Chart area for overlaid performance comparisons")
-    print("- 7x6 matrix for dataset selection (checkboxes)")
-    print("- Radio buttons for baseline selection")
-    print("- Control buttons for chart updates")
-    print("\nPlease review the layout and provide feedback!")
+    """Run the EnergyPlus Concurrent Simulation Explorer"""
+    print("EnergyPlus Concurrent Simulation Explorer - Performance Analysis Tool")
+    print("Features:")
+    print("• Interactive chart area for overlaid performance comparisons")
+    print("• 7×6 matrix for dataset selection (thread counts vs concurrent simulations)")
+    print("• Flexible baseline comparison modes (Single/Row/Column)")
+    print("• Real-time statistical analysis panel")
+    print("• Project file loading with auto-detection")
+    print("• Menu bar and toolbar for easy access")
+    print("• Chart export capabilities")
+    print("• Keyboard shortcuts (Ctrl+O, F5, etc.)")
+    print()
+    print("Use 'Load Project Data' or Ctrl+O to get started!")
+    print("Project file will auto-load if 'energyplus_project.json' exists in current directory.")
+    print()
     
     app = SimulationExplorerUI()
     app.run()
