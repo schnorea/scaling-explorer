@@ -266,9 +266,25 @@ class SimulationExplorerUI:
                                text="Select datasets to overlay (checkboxes) and baseline reference (radio button):")
         instructions.grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
         
-        # Status label (below the instructions)
-        self.status_label = ttk.Label(selection_frame, text="Ready - Load project data to begin")
-        self.status_label.grid(row=1, column=0, sticky=tk.W, pady=(0, 5))
+        # Status and baseline controls container (same region)
+        status_baseline_frame = ttk.Frame(selection_frame)
+        status_baseline_frame.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(0, 5))
+        status_baseline_frame.grid_columnconfigure(0, weight=1)
+        
+        # Status label (left side of the container)
+        self.status_label = ttk.Label(status_baseline_frame, text="Ready - Load project data to begin")
+        self.status_label.grid(row=0, column=0, sticky=tk.W)
+        
+        # Baseline comparison mode (right side of the same container)
+        baseline_frame = ttk.LabelFrame(status_baseline_frame, text="Baseline Mode", padding="2")
+        baseline_frame.grid(row=0, column=1, sticky=tk.E, padx=(10, 0))
+        
+        ttk.Radiobutton(baseline_frame, text="Single", variable=self.baseline_mode, value="single",
+                       command=self.update_comparison_mode).pack(side=tk.LEFT)
+        ttk.Radiobutton(baseline_frame, text="Row", variable=self.baseline_mode, value="row",
+                       command=self.update_comparison_mode).pack(side=tk.LEFT)
+        ttk.Radiobutton(baseline_frame, text="Column", variable=self.baseline_mode, value="column",
+                       command=self.update_comparison_mode).pack(side=tk.LEFT)
         
         # Create scrollable container for all content
         self.create_scrollable_content(selection_frame)
@@ -494,17 +510,6 @@ class SimulationExplorerUI:
         # Toggle function labels
         ttk.Checkbutton(button_frame, text="Show Function Labels", variable=self.show_function_labels,
                        command=self.update_chart).pack(side=tk.LEFT, padx=(0, 10))
-        
-        # Baseline comparison mode
-        baseline_frame = ttk.LabelFrame(button_frame, text="Baseline Mode", padding="2")
-        baseline_frame.pack(side=tk.LEFT, padx=(10, 0))
-        
-        ttk.Radiobutton(baseline_frame, text="Single", variable=self.baseline_mode, value="single",
-                       command=self.update_comparison_mode).pack(side=tk.LEFT)
-        ttk.Radiobutton(baseline_frame, text="Row", variable=self.baseline_mode, value="row",
-                       command=self.update_comparison_mode).pack(side=tk.LEFT)
-        ttk.Radiobutton(baseline_frame, text="Column", variable=self.baseline_mode, value="column",
-                       command=self.update_comparison_mode).pack(side=tk.LEFT)
     
     def sort_functions_by_preference(self, function_names, selected_datasets, baseline_functions):
         """Sort functions based on user preference: alphabetic or by magnitude"""
