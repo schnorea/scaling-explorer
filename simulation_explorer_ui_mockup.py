@@ -31,6 +31,7 @@ class SimulationExplorerUI:
         self.selected_functions = set()  # Track selected functions in chart
         self.show_stats_panel = tk.BooleanVar(value=True)  # Show/hide stats panel
         self.show_function_labels = tk.BooleanVar(value=True)  # Show/hide function labels
+        self.function_ordering = tk.StringVar(value="alphabetic")  # Function ordering: "alphabetic" or "magnitude"
         
         # Baseline selection variables for different modes
         self.single_baseline_var = tk.StringVar()  # For single dataset baseline
@@ -115,6 +116,15 @@ class SimulationExplorerUI:
                                  command=self.toggle_stats_panel)
         view_menu.add_checkbutton(label="Show Function Labels", variable=self.show_function_labels,
                                  command=self.update_chart)
+        view_menu.add_separator()
+        
+        # Function ordering submenu
+        ordering_menu = tk.Menu(view_menu, tearoff=0)
+        view_menu.add_cascade(label="Function Ordering", menu=ordering_menu)
+        ordering_menu.add_radiobutton(label="Alphabetical", variable=self.function_ordering, 
+                                     value="alphabetic", command=self.update_chart)
+        ordering_menu.add_radiobutton(label="By Magnitude (Largest First)", variable=self.function_ordering,
+                                     value="magnitude", command=self.update_chart)
         
         # Analysis menu
         analysis_menu = tk.Menu(menubar, tearoff=0)
@@ -496,6 +506,41 @@ class SimulationExplorerUI:
         self.status_label = ttk.Label(button_frame, text="Ready - Load project data to begin")
         self.status_label.pack(side=tk.RIGHT)
     
+    def sort_functions_by_preference(self, function_names, selected_datasets, baseline_functions):
+        """Sort functions based on user preference: alphabetic or by magnitude"""
+        
+        ordering = self.function_ordering.get()
+        
+        if ordering == "alphabetic":
+            # Simple alphabetical sorting
+            return sorted(function_names)
+        
+        elif ordering == "magnitude":
+            # Sort by maximum performance ratio across all selected datasets
+            function_max_ratios = {}
+            
+            for func_name in function_names:
+                max_ratio = 0.0
+                baseline_time = baseline_functions.get(func_name, {}).get('total_time', 1.0)
+                
+                if baseline_time > 0:
+                    # Calculate max ratio across all selected datasets for this function
+                    for dataset in selected_datasets:
+                        dataset_functions = dataset['data'].get('functions', {})
+                        if func_name in dataset_functions:
+                            dataset_time = dataset_functions[func_name]['total_time']
+                            ratio = dataset_time / baseline_time
+                            max_ratio = max(max_ratio, ratio)
+                
+                function_max_ratios[func_name] = max_ratio
+            
+            # Sort by maximum ratio (descending - largest first)
+            return sorted(function_names, key=lambda f: function_max_ratios.get(f, 0), reverse=True)
+        
+        else:
+            # Default fallback to alphabetical
+            return sorted(function_names)
+    
     def create_demo_chart(self):
         """Create a chart with real or demo data based on what's loaded"""
         
@@ -561,6 +606,10 @@ class SimulationExplorerUI:
         function_names = list(baseline_functions.keys())
         print(f"Found {len(function_names)} functions in baseline data")
         
+        # Sort functions based on user preference
+        function_names = self.sort_functions_by_preference(function_names, selected_datasets, baseline_functions)
+        print(f"Functions sorted by {self.function_ordering.get()} order")
+        
         self.ax.clear()
         
         # Create performance ratios for each dataset
@@ -619,6 +668,10 @@ class SimulationExplorerUI:
         self.dataset_names = [d['name'] for d in selected_datasets]
         
         self.canvas.draw()
+        
+        # Restore function highlighting after chart redraw
+        if self.selected_functions:
+            self.highlight_selected_functions()
     
     def create_mock_data_chart(self):
         """Create demo chart when no real data is loaded"""
@@ -632,6 +685,27 @@ class SimulationExplorerUI:
             {'name': '2 sims, 2 threads', 'ratios': [1.2, 0.8, 1.1, 0.9, 1.3], 'alpha': 0.7},
             {'name': '4 sims, 4 threads', 'ratios': [1.8, 0.6, 1.5, 0.7, 2.1], 'alpha': 0.7},
         ]
+        
+        # Apply sorting to demo functions
+        if self.function_ordering.get() == "magnitude":
+            # Sort by maximum ratio across all datasets (descending)
+            max_ratios = {}
+            for i, func in enumerate(functions):
+                max_ratio = max(dataset['ratios'][i] for dataset in datasets)
+                max_ratios[func] = max_ratio
+            
+            # Create sorted order and reorder all data accordingly
+            sorted_indices = sorted(range(len(functions)), 
+                                  key=lambda i: max_ratios[functions[i]], reverse=True)
+            functions = [functions[i] for i in sorted_indices]
+            for dataset in datasets:
+                dataset['ratios'] = [dataset['ratios'][i] for i in sorted_indices]
+        else:
+            # Alphabetical sorting (default)
+            sorted_indices = sorted(range(len(functions)), key=lambda i: functions[i])
+            functions = [functions[i] for i in sorted_indices]
+            for dataset in datasets:
+                dataset['ratios'] = [dataset['ratios'][i] for i in sorted_indices]
         
         self.ax.clear()
         
@@ -675,6 +749,10 @@ class SimulationExplorerUI:
         self.dataset_names = [d['name'] for d in datasets]
         
         self.canvas.draw()
+        
+        # Restore function highlighting after chart redraw
+        if self.selected_functions:
+            self.highlight_selected_functions()
     
     def get_baseline_data(self):
         """Get baseline data based on current baseline mode"""
@@ -793,8 +871,23 @@ class SimulationExplorerUI:
         if event.inaxes != self.ax:
             return
         
-        # Mock function selection - in real implementation, detect which bar was clicked
-        if event.xdata is not None:
+        # Detect which function bar was clicked based on chart data
+        if event.xdata is not None and hasattr(self, 'function_names'):
+            func_index = int(round(event.xdata))
+            if 0 <= func_index < len(self.function_names):
+                func_name = self.function_names[func_index]
+                
+                if func_name in self.selected_functions:
+                    self.selected_functions.remove(func_name)
+                    print(f"Deselected function: {func_name}")
+                else:
+                    self.selected_functions.add(func_name)
+                    print(f"Selected function: {func_name}")
+                
+                self.update_statistics()
+                self.highlight_selected_functions()
+        elif event.xdata is not None:
+            # Fallback for demo data when no real function names available
             func_index = int(round(event.xdata))
             if 0 <= func_index < 5:  # Demo has 5 functions
                 func_name = f"Function {chr(65 + func_index)}"  # A, B, C, D, E
@@ -899,10 +992,46 @@ class SimulationExplorerUI:
         self.update_statistics()
     
     def highlight_selected_functions(self):
-        """Visual feedback for selected functions"""
-        # In real implementation, would highlight selected bars
+        """Visual feedback for selected functions by highlighting bars"""
         selected_list = list(self.selected_functions)
         print(f"Currently selected functions: {selected_list}")
+        
+        # Clear any existing highlights and add new ones
+        if hasattr(self, 'function_names') and hasattr(self, 'ax'):
+            # Initialize highlight patches list if it doesn't exist
+            if not hasattr(self, 'highlight_patches'):
+                self.highlight_patches = []
+            else:
+                # Only try to remove patches if the axes hasn't been cleared
+                # (chart redraw clears all patches automatically)
+                try:
+                    for patch in self.highlight_patches:
+                        if patch in self.ax.patches:
+                            patch.remove()
+                except (NotImplementedError, ValueError, AttributeError):
+                    # If removal fails, patches were likely already cleared by chart redraw
+                    pass
+            
+            self.highlight_patches = []
+            
+            # Add highlight rectangles for selected functions
+            for func_name in self.selected_functions:
+                if func_name in self.function_names:
+                    func_index = self.function_names.index(func_name)
+                    
+                    # Get the current y-axis limits to size the highlight rectangle
+                    y_min, y_max = self.ax.get_ylim()  
+                    
+                    # Create a semi-transparent rectangle to highlight the selected function
+                    highlight = plt.Rectangle(
+                        (func_index - 0.4, y_min), 0.8, y_max - y_min,
+                        alpha=0.2, color='yellow', zorder=0
+                    )
+                    self.ax.add_patch(highlight)
+                    self.highlight_patches.append(highlight)
+            
+            # Redraw the canvas to show highlights
+            self.canvas.draw_idle()
     
     def update_statistics(self):
         """Update the statistics panel based on selections"""
@@ -946,7 +1075,27 @@ class SimulationExplorerUI:
         
         stats_text += f"Selected Datasets: {selected_datasets}\n"
         stats_text += f"Baseline: {baseline_threads} threads, {baseline_sims} sims\n"
-        stats_text += f"Comparison Mode: {baseline_mode.capitalize()}\n\n"
+        stats_text += f"Comparison Mode: {baseline_mode.capitalize()}\n"
+        
+        # Show details of selected datasets
+        if selected_datasets > 0:
+            stats_text += f"\nSELECTED DATASET DETAILS\n{'-'*25}\n"
+            selected_coords = [(row, col) for (row, col), var in self.dataset_selections.items() if var.get()]
+            for row, col in selected_coords:
+                threads = self.thread_counts[row]
+                sims = self.concurrent_sims[col]
+                has_data = (row, col) in self.simulation_data
+                status = "✓ Loaded" if has_data else "⚠ Not loaded"
+                stats_text += f"• {sims} sim{'s' if sims > 1 else ''}, {threads} thread{'s' if threads > 1 else ''} - {status}\n"
+                
+                # If we have real data for this dataset, show performance metrics
+                if has_data and using_real_data:
+                    data = self.simulation_data[(row, col)]
+                    metadata = data.get('metadata', {})
+                    total_time = metadata.get('total_simulation_time', 0)
+                    if total_time > 0:
+                        stats_text += f"  Time: {total_time:.1f}s\n"
+            stats_text += "\n"
         
         # Explain comparison mode
         if baseline_mode == "single":
@@ -959,10 +1108,53 @@ class SimulationExplorerUI:
             stats_text += "(Same sim count, different thread counts)\n\n"
         
         if len(self.selected_functions) > 0:
-            stats_text += f"SELECTED FUNCTIONS\n{'-'*20}\n"
-            for func in sorted(self.selected_functions):
-                stats_text += f"• {func}\n"
-            stats_text += "\n"
+            stats_text += f"SELECTED FUNCTIONS ({len(self.selected_functions)})\n{'-'*25}\n"
+            
+            # Show function-specific analysis if we have real data
+            if using_real_data and selected_datasets > 0:
+                baseline_data = self.get_baseline_data()
+                if baseline_data and baseline_data.get('functions'):
+                    baseline_functions = baseline_data.get('functions', {})
+                    selected_coords = [(row, col) for (row, col), var in self.dataset_selections.items() if var.get()]
+                    available_data = [(row, col) for row, col in selected_coords if (row, col) in self.simulation_data]
+                    
+                    for func in sorted(self.selected_functions):
+                        if func in baseline_functions:
+                            baseline_time = baseline_functions[func]['total_time']
+                            stats_text += f"• {func}:\n"
+                            stats_text += f"  Baseline: {baseline_time:.3f}s\n"
+                            
+                            # Collect performance across selected datasets
+                            ratios = []
+                            for row, col in available_data:
+                                data = self.simulation_data[(row, col)]
+                                functions = data.get('functions', {})
+                                if func in functions and baseline_time > 0:
+                                    func_time = functions[func]['total_time']
+                                    ratio = func_time / baseline_time
+                                    ratios.append(ratio)
+                                    threads = self.thread_counts[row]
+                                    sims = self.concurrent_sims[col]
+                                    stats_text += f"  {sims}s,{threads}t: {ratio:.2f}x ({func_time:.3f}s)\n"
+                            
+                            if ratios:
+                                min_ratio = min(ratios)
+                                max_ratio = max(ratios)
+                                avg_ratio = sum(ratios) / len(ratios)
+                                stats_text += f"  Range: {min_ratio:.2f}x - {max_ratio:.2f}x (avg: {avg_ratio:.2f}x)\n"
+                        else:
+                            stats_text += f"• {func}: No data in baseline\n"
+                        stats_text += "\n"
+                else:
+                    # Fallback for selected functions without baseline data
+                    for func in sorted(self.selected_functions):
+                        stats_text += f"• {func}\n"
+                    stats_text += "\n"
+            else:
+                # Show basic function list for demo data or when no datasets selected
+                for func in sorted(self.selected_functions):
+                    stats_text += f"• {func}\n"
+                stats_text += "\n"
         
         if using_real_data and selected_datasets > 0:
             # Analyze real data
