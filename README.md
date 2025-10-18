@@ -4,12 +4,25 @@ A GUI application for analyzing and visualizing EnergyPlus simulation performanc
 
 ## Features
 
-### Data Management
-- **Project File Loading**: Load all simulation datasets with a single project JSON file
-- **Auto-Detection**: Automatically loads `energyplus_project.json` if found in current directory
-- **Multiple Access Methods**: Menu bar (File → Load Project), toolbar button, keyboard shortcut (Ctrl+O)
-- **Real Data Visualization**: Display actual EnergyPlus function performance data
-- **Matrix Layout**: 7×6 grid showing thread counts (1-32) vs concurrent simulations (1-64)
+## Real Data Visualization Features
+
+### ✅ **Complete Dataset Integration**
+- **42 Simulation Datasets**: Full matrix of thread counts (1-32) × concurrent simulations (1-64)
+- **48 Functions per Dataset**: Comprehensive EnergyPlus function performance tracking
+- **Realistic Performance Data**: Actual simulation times ranging from 156s to 81,819s
+- **Auto-Loading**: Automatic detection and loading of project data on startup
+
+### ✅ **Data Selection Matrix**
+- **Real Execution Times**: Matrix displays actual simulation times from loaded data
+- **Visual Indicators**: Real data shown with lime text on dark green background
+- **Auto-Selection**: Intelligent selection of interesting datasets for immediate analysis
+- **Interactive Selection**: Click checkboxes to select/deselect specific configurations
+
+### ✅ **Performance Analysis Charts**
+- **Real Function Data**: Charts display actual function performance ratios
+- **Baseline Comparison**: Compare against real baseline performance data
+- **Multiple Datasets**: Overlay multiple real simulation results
+- **Function Abbreviation**: Smart abbreviation of long EnergyPlus function names
 
 ### User Interface
 - **Menu Bar**: Full menu system with File, View, Analysis, and Help menus

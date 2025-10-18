@@ -507,6 +507,8 @@ class SimulationExplorerUI:
     def create_real_data_chart(self):
         """Create chart using real loaded simulation data"""
         
+        print("Creating chart with real data...")
+        
         # Get selected datasets
         selected_datasets = []
         baseline_data = None
@@ -523,34 +525,41 @@ class SimulationExplorerUI:
                     'sims': sims,
                     'coords': (row_idx, col_idx)
                 })
+                print(f"Added dataset: {sims} sims, {threads} threads")
         
         if not selected_datasets:
             self.ax.clear()
-            self.ax.text(0.5, 0.5, 'No datasets selected or loaded.\nLoad project data and select datasets to visualize.',
+            data_count = len(self.simulation_data)
+            selected_count = sum(1 for var in self.dataset_selections.values() if var.get())
+            self.ax.text(0.5, 0.5, 
+                        f'No valid datasets selected.\n\nLoaded: {data_count} datasets\nSelected: {selected_count} datasets\n\nSelect datasets with loaded data to visualize.',
                         ha='center', va='center', transform=self.ax.transAxes, fontsize=12)
             self.canvas.draw()
             return
+        
+        print(f"Found {len(selected_datasets)} selected datasets with real data")
         
         # Get baseline data based on current mode
         baseline_data = self.get_baseline_data()
         
         if not baseline_data:
             self.ax.clear()
-            self.ax.text(0.5, 0.5, 'Baseline data not available.\nPlease select a valid baseline.',
+            self.ax.text(0.5, 0.5, 'Baseline data not available.\nPlease select a valid baseline with loaded data.',
                         ha='center', va='center', transform=self.ax.transAxes, fontsize=12)
             self.canvas.draw()
             return
         
-        # Extract function names from the first dataset
+        # Extract function names from the baseline dataset
         baseline_functions = baseline_data.get('functions', {})
         if not baseline_functions:
             self.ax.clear()
-            self.ax.text(0.5, 0.5, 'No function data available in baseline.',
+            self.ax.text(0.5, 0.5, 'No function data available in baseline dataset.',
                         ha='center', va='center', transform=self.ax.transAxes, fontsize=12)
             self.canvas.draw()
             return
         
         function_names = list(baseline_functions.keys())
+        print(f"Found {len(function_names)} functions in baseline data")
         
         self.ax.clear()
         
@@ -571,6 +580,8 @@ class SimulationExplorerUI:
                 else:
                     ratio = 1.0  # Default if function missing
                 ratios.append(ratio)
+            
+            print(f"Dataset {dataset['name']}: ratios range {min(ratios):.2f} - {max(ratios):.2f}")
             
             # Plot bars for this dataset
             self.ax.bar(x, ratios, bar_width, 
@@ -669,25 +680,53 @@ class SimulationExplorerUI:
         """Get baseline data based on current baseline mode"""
         
         mode = self.baseline_mode.get()
+        print(f"Getting baseline data for mode: {mode}")
         
         if mode == "single":
             baseline_key = self.single_baseline_var.get()
             if baseline_key and '_' in baseline_key:
                 baseline_row, baseline_col = map(int, baseline_key.split('_'))
-                return self.simulation_data.get((baseline_row, baseline_col))
+                baseline_data = self.simulation_data.get((baseline_row, baseline_col))
+                if baseline_data:
+                    threads = self.thread_counts[baseline_row]
+                    sims = self.concurrent_sims[baseline_col]
+                    print(f"Using single baseline: {threads} threads, {sims} sims")
+                    return baseline_data
+                else:
+                    print(f"Single baseline data not found for coordinates ({baseline_row}, {baseline_col})")
         elif mode == "row":
             baseline_row = int(self.row_baseline_var.get()) if self.row_baseline_var.get() else 0
-            # Use first column as baseline for row comparison
-            return self.simulation_data.get((baseline_row, 0))
+            # Use first available column as baseline for row comparison
+            for col in range(len(self.concurrent_sims)):
+                if (baseline_row, col) in self.simulation_data:
+                    baseline_data = self.simulation_data.get((baseline_row, col))
+                    threads = self.thread_counts[baseline_row]
+                    sims = self.concurrent_sims[col]
+                    print(f"Using row baseline: {threads} threads, {sims} sims")
+                    return baseline_data
+            print(f"No row baseline data found for row {baseline_row}")
         elif mode == "column":
             baseline_col = int(self.column_baseline_var.get()) if self.column_baseline_var.get() else 0
-            # Use first row as baseline for column comparison
-            return self.simulation_data.get((0, baseline_col))
+            # Use first available row as baseline for column comparison
+            for row in range(len(self.thread_counts)):
+                if (row, baseline_col) in self.simulation_data:
+                    baseline_data = self.simulation_data.get((row, baseline_col))
+                    threads = self.thread_counts[row]
+                    sims = self.concurrent_sims[baseline_col]
+                    print(f"Using column baseline: {threads} threads, {sims} sims")
+                    return baseline_data
+            print(f"No column baseline data found for column {baseline_col}")
         
         # Fallback: try to get any available data as baseline
         if self.simulation_data:
-            return list(self.simulation_data.values())[0]
+            fallback_key = list(self.simulation_data.keys())[0]
+            fallback_data = self.simulation_data[fallback_key]
+            threads = self.thread_counts[fallback_key[0]]
+            sims = self.concurrent_sims[fallback_key[1]]
+            print(f"Using fallback baseline: {threads} threads, {sims} sims")
+            return fallback_data
         
+        print("No baseline data available at all")
         return None
     
     def abbreviate_function_name(self, name):
@@ -843,7 +882,14 @@ class SimulationExplorerUI:
     
     def update_chart(self):
         """Refresh the chart display with current settings"""
-        self.create_demo_chart()
+        print("Chart update requested - checking data availability...")
+        if self.simulation_data:
+            print(f"Using real data ({len(self.simulation_data)} datasets loaded)")
+            self.create_demo_chart()  # This method already handles real vs mock data
+        else:
+            print("No real data available - using mock data")
+            self.create_demo_chart()
+        print("Chart update completed")
     
     def clear_selections(self):
         """Clear all dataset selections"""
@@ -1283,6 +1329,8 @@ Use Ctrl+O to load project data and get started!"""
         if not self.simulation_data:
             return
         
+        print(f"Updating table with real data for {len(self.simulation_data)} datasets...")
+        
         # Update time labels in the table
         for (thread_idx, sim_idx), data in self.simulation_data.items():
             if hasattr(self, 'table_frame'):
@@ -1294,12 +1342,63 @@ Use Ctrl+O to load project data and get started!"""
                 total_time = data.get('metadata', {}).get('total_simulation_time', 0)
                 
                 # Find and update the time label
+                updated = False
                 for widget in self.table_frame.grid_slaves():
                     info = widget.grid_info()
                     if info['row'] == table_row and info['column'] == start_col:
                         if isinstance(widget, ttk.Label):
-                            widget.config(text=f"{total_time:.1f}s")
-                        break
+                            # Update with real time and visual indicator
+                            widget.config(text=f"{total_time:.1f}s", foreground='lime', background='darkgreen')
+                            updated = True
+                            break
+                
+                if updated:
+                    print(f"Updated cell ({thread_idx}, {sim_idx}) with real time: {total_time:.1f}s")
+        
+        # Force a chart update to use real data
+        self.update_chart()
+        
+        # Auto-select some interesting datasets for immediate visualization
+        self.auto_select_datasets()
+        
+        print("Table update complete - real execution times now displayed")
+    
+    def auto_select_datasets(self):
+        """Automatically select some interesting datasets when real data is loaded"""
+        
+        if not self.simulation_data:
+            return
+        
+        # Clear current selections
+        for var in self.dataset_selections.values():
+            var.set(False)
+        
+        # Select some interesting combinations that are likely to be loaded
+        interesting_combinations = [
+            (0, 0),  # 1 thread, 1 sim - baseline
+            (1, 1),  # 2 threads, 2 sims
+            (3, 2),  # 8 threads, 4 sims
+            (4, 3),  # 16 threads, 8 sims
+            (0, 3),  # 1 thread, 8 sims - high contention
+        ]
+        
+        selected_count = 0
+        for thread_idx, sim_idx in interesting_combinations:
+            if (thread_idx, sim_idx) in self.simulation_data:
+                self.dataset_selections[(thread_idx, sim_idx)].set(True)
+                selected_count += 1
+                threads = self.thread_counts[thread_idx]
+                sims = self.concurrent_sims[sim_idx]
+                print(f"Auto-selected: {threads} threads, {sims} sims")
+        
+        if selected_count > 0:
+            # Set baseline to first available dataset (1 thread, 1 sim if available)
+            if (0, 0) in self.simulation_data:
+                self.single_baseline_var.set("0_0")
+            
+            print(f"Auto-selected {selected_count} datasets for immediate visualization")
+            self.update_status()
+            self.update_chart()
     
     def get_real_execution_time(self, thread_idx, sim_idx):
         """Get real execution time from loaded data, fallback to mock if not available"""
@@ -1322,12 +1421,6 @@ Use Ctrl+O to load project data and get started!"""
         self.baseline_selection = (row, 0)  # For now, assume first thread count
         self.update_status()
         print(f"Baseline changed to: {self.concurrent_sims[row]} sims")
-    
-    def update_chart(self):
-        """Update the chart based on current selections"""
-        selected_count = sum(1 for var in self.dataset_selections.values() if var.get())
-        print(f"Updating chart with {selected_count} selected datasets")
-        self.status_label.config(text=f"Chart updated with {selected_count} datasets")
     
     def clear_selections(self):
         """Clear all checkbox selections"""
