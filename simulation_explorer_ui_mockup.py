@@ -110,47 +110,99 @@ class SimulationExplorerUI:
         self.create_demo_chart()
     
     def create_selection_table(self, parent):
-        """Create the dataset selection table with scrollbar"""
+        """Create the dataset selection table with full scrollable content"""
         
         # Configure parent for expansion
         parent.grid_rowconfigure(0, weight=1)
         parent.grid_columnconfigure(0, weight=1)
         
-        # Selection frame
+        # Main selection frame
         selection_frame = ttk.LabelFrame(parent, text="Dataset Selection Matrix", padding="5")
         selection_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
         selection_frame.grid_rowconfigure(1, weight=1)
         selection_frame.grid_columnconfigure(0, weight=1)
         
-        # Instructions
+        # Instructions (fixed at top)
         instructions = ttk.Label(selection_frame, 
                                text="Select datasets to overlay (checkboxes) and baseline reference (radio button):")
-        instructions.grid(row=0, column=0, sticky=tk.W, pady=(0, 10))
+        instructions.grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
         
-        # Create scrollable frame for the table
-        canvas = tk.Canvas(selection_frame, height=200)
-        scrollbar = ttk.Scrollbar(selection_frame, orient="horizontal", command=canvas.xview)
-        self.scrollable_frame = ttk.Frame(canvas)
+        # Create scrollable container for all content
+        self.create_scrollable_content(selection_frame)
+    
+    def create_scrollable_content(self, parent):
+        """Create a fully scrollable area for table and controls"""
         
+        # Create main scrollable container
+        scroll_container = ttk.Frame(parent)
+        scroll_container.grid(row=1, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        scroll_container.grid_rowconfigure(0, weight=1)
+        scroll_container.grid_columnconfigure(0, weight=1)
+        
+        # Create canvas for scrolling
+        self.content_canvas = tk.Canvas(scroll_container, highlightthickness=0)
+        
+        # Create vertical scrollbar
+        v_scrollbar = ttk.Scrollbar(scroll_container, orient=tk.VERTICAL, command=self.content_canvas.yview)
+        
+        # Create horizontal scrollbar  
+        h_scrollbar = ttk.Scrollbar(scroll_container, orient=tk.HORIZONTAL, command=self.content_canvas.xview)
+        
+        # Configure canvas scrolling
+        self.content_canvas.configure(yscrollcommand=v_scrollbar.set, xscrollcommand=h_scrollbar.set)
+        
+        # Create scrollable frame inside canvas
+        self.scrollable_frame = ttk.Frame(self.content_canvas)
+        
+        # Bind frame resize to update scroll region
         self.scrollable_frame.bind(
             "<Configure>",
-            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+            lambda e: self.content_canvas.configure(scrollregion=self.content_canvas.bbox("all"))
         )
         
-        canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
-        canvas.configure(xscrollcommand=scrollbar.set)
+        # Create window in canvas for the scrollable frame
+        self.canvas_window = self.content_canvas.create_window(
+            (0, 0), window=self.scrollable_frame, anchor="nw"
+        )
         
-        canvas.grid(row=1, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
-        scrollbar.grid(row=2, column=0, sticky=(tk.W, tk.E))
+        # Grid the canvas and scrollbars
+        self.content_canvas.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        v_scrollbar.grid(row=0, column=1, sticky=(tk.N, tk.S))
+        h_scrollbar.grid(row=1, column=0, sticky=(tk.W, tk.E))
         
-        # Create table header in scrollable frame
-        self.create_table_header(self.scrollable_frame)
+        # Enable mouse wheel scrolling
+        self.bind_mousewheel(self.content_canvas)
         
-        # Create table rows in scrollable frame
-        self.create_table_rows(self.scrollable_frame)
+        # Create all content in the scrollable frame
+        self.create_all_table_content(self.scrollable_frame)
+    
+    def bind_mousewheel(self, canvas):
+        """Bind mouse wheel events for scrolling"""
+        def on_mousewheel(event):
+            canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
         
-        # Control buttons in main selection frame (not scrollable)
-        self.create_control_buttons(selection_frame)
+        def on_shift_mousewheel(event):
+            canvas.xview_scroll(int(-1 * (event.delta / 120)), "units")
+        
+        # Bind mousewheel events to canvas and its children
+        canvas.bind("<MouseWheel>", on_mousewheel)
+        canvas.bind("<Shift-MouseWheel>", on_shift_mousewheel)
+    
+    def create_all_table_content(self, parent):
+        """Create table and controls in the scrollable area"""
+        
+        # Create table header
+        self.create_table_header(parent)
+        
+        # Create table rows
+        self.create_table_rows(parent)
+        
+        # Add some spacing
+        spacer = ttk.Frame(parent, height=20)
+        spacer.grid(row=10, column=0, columnspan=25, pady=10)
+        
+        # Create control buttons in scrollable area
+        self.create_control_buttons(parent)
     
     def create_table_header(self, parent):
         """Create the table header with 21 columns (3 per sim) and spanning headers"""
