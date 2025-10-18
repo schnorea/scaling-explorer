@@ -275,10 +275,11 @@ class SimulationExplorerUI:
         self.status_label = ttk.Label(status_baseline_frame, text="Ready - Load project data to begin")
         self.status_label.grid(row=0, column=0, sticky=tk.W)
         
-        # Baseline comparison mode (right side of the same container)
-        baseline_frame = ttk.LabelFrame(status_baseline_frame, text="Baseline Mode", padding="2")
+        # Baseline comparison mode (right side of the same container) - inline for shortest profile
+        baseline_frame = ttk.Frame(status_baseline_frame)
         baseline_frame.grid(row=0, column=1, sticky=tk.E, padx=(10, 0))
         
+        ttk.Label(baseline_frame, text="Baseline:").pack(side=tk.LEFT, padx=(0, 5))
         ttk.Radiobutton(baseline_frame, text="Single", variable=self.baseline_mode, value="single",
                        command=self.update_comparison_mode).pack(side=tk.LEFT)
         ttk.Radiobutton(baseline_frame, text="Row", variable=self.baseline_mode, value="row",
