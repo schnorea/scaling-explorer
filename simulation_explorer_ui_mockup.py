@@ -258,13 +258,17 @@ class SimulationExplorerUI:
         # Main selection frame
         selection_frame = ttk.LabelFrame(parent, text="Dataset Selection Matrix", padding="5")
         selection_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
-        selection_frame.grid_rowconfigure(1, weight=1)
+        selection_frame.grid_rowconfigure(2, weight=1)
         selection_frame.grid_columnconfigure(0, weight=1)
         
         # Instructions (fixed at top)
         instructions = ttk.Label(selection_frame, 
                                text="Select datasets to overlay (checkboxes) and baseline reference (radio button):")
         instructions.grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
+        
+        # Status label (below the instructions)
+        self.status_label = ttk.Label(selection_frame, text="Ready - Load project data to begin")
+        self.status_label.grid(row=1, column=0, sticky=tk.W, pady=(0, 5))
         
         # Create scrollable container for all content
         self.create_scrollable_content(selection_frame)
@@ -274,7 +278,7 @@ class SimulationExplorerUI:
         
         # Create main scrollable container
         scroll_container = ttk.Frame(parent)
-        scroll_container.grid(row=1, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        scroll_container.grid(row=2, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
         scroll_container.grid_rowconfigure(0, weight=1)
         scroll_container.grid_columnconfigure(0, weight=1)
         
@@ -501,10 +505,6 @@ class SimulationExplorerUI:
                        command=self.update_comparison_mode).pack(side=tk.LEFT)
         ttk.Radiobutton(baseline_frame, text="Column", variable=self.baseline_mode, value="column",
                        command=self.update_comparison_mode).pack(side=tk.LEFT)
-        
-        # Status label
-        self.status_label = ttk.Label(button_frame, text="Ready - Load project data to begin")
-        self.status_label.pack(side=tk.RIGHT)
     
     def sort_functions_by_preference(self, function_names, selected_datasets, baseline_functions):
         """Sort functions based on user preference: alphabetic or by magnitude"""
