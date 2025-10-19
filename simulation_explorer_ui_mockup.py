@@ -7,6 +7,7 @@ import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import json
 import os
@@ -31,7 +32,9 @@ class SimulationExplorerUI:
         self.selected_functions = set()  # Track selected functions in chart
         self.show_stats_panel = tk.BooleanVar(value=True)  # Show/hide stats panel
         self.show_function_labels = tk.BooleanVar(value=True)  # Show/hide function labels
+        self.show_surface_plot = tk.BooleanVar(value=False)  # Show/hide 3D surface plot panel
         self.function_ordering = tk.StringVar(value="alphabetic")  # Function ordering: "alphabetic" or "magnitude"
+        self.last_selected_function = None  # Track the last function clicked for 3D plot
         
         # Baseline selection variables for different modes
         self.single_baseline_var = tk.StringVar()  # For single dataset baseline
@@ -83,10 +86,31 @@ class SimulationExplorerUI:
         vertical_paned.add(table_panel, weight=1)  # Takes 1/4 of vertical space initially
         self.create_selection_table(table_panel)
         
-        # Right panel: Statistics panel
-        stats_panel = ttk.Frame(main_paned)
-        main_paned.add(stats_panel, weight=1)  # Takes 1/4 of horizontal space initially
+        # Right panel: Create a vertical paned window for stats and 3D surface plot
+        right_panel = ttk.Frame(main_paned)
+        main_paned.add(right_panel, weight=1)  # Takes 1/4 of horizontal space initially
+        
+        # Create vertical paned window for right panels
+        right_vertical_paned = ttk.PanedWindow(right_panel, orient=tk.VERTICAL)
+        right_vertical_paned.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        right_panel.grid_rowconfigure(0, weight=1)
+        right_panel.grid_columnconfigure(0, weight=1)
+        
+        # Statistics panel (top right)
+        stats_panel = ttk.Frame(right_vertical_paned)
+        right_vertical_paned.add(stats_panel, weight=1)
         self.create_statistics_panel(stats_panel)
+        
+        # 3D Surface Plot panel (bottom right) - initially hidden
+        self.surface_plot_panel = ttk.Frame(right_vertical_paned)
+        self.create_surface_plot_panel(self.surface_plot_panel)
+        
+        # Store reference to right vertical paned window
+        self.right_vertical_paned = right_vertical_paned
+        
+        # Add to paned window initially if it should be shown
+        if self.show_surface_plot.get():
+            right_vertical_paned.add(self.surface_plot_panel, weight=1)
         
         # Initialize with some default selections
         self.initialize_defaults()
@@ -115,6 +139,8 @@ class SimulationExplorerUI:
         menubar.add_cascade(label="View", menu=view_menu)
         view_menu.add_checkbutton(label="Show Statistics Panel", variable=self.show_stats_panel, 
                                  command=self.toggle_stats_panel)
+        view_menu.add_checkbutton(label="Show 3D Surface Plot", variable=self.show_surface_plot,
+                                 command=self.toggle_surface_plot_panel)
         view_menu.add_checkbutton(label="Show Function Labels", variable=self.show_function_labels,
                                  command=self.update_chart)
         view_menu.add_separator()
@@ -523,6 +549,10 @@ class SimulationExplorerUI:
         ttk.Checkbutton(button_frame, text="Show Statistics", variable=self.show_stats_panel,
                        command=self.toggle_stats_panel).pack(side=tk.LEFT, padx=(0, 10))
         
+        # Toggle 3D surface plot panel
+        ttk.Checkbutton(button_frame, text="Show 3D Surface Plot", variable=self.show_surface_plot,
+                       command=self.toggle_surface_plot_panel).pack(side=tk.LEFT, padx=(0, 10))
+        
         # Toggle function labels
         ttk.Checkbutton(button_frame, text="Show Function Labels", variable=self.show_function_labels,
                        command=self.update_chart).pack(side=tk.LEFT, padx=(0, 10))
@@ -926,8 +956,15 @@ class SimulationExplorerUI:
                     self.selected_functions.add(func_name)
                     print(f"Selected function: {func_name}")
                 
+                # Update the last selected function for 3D surface plot
+                self.last_selected_function = func_name
+                
                 self.update_statistics()
                 self.highlight_selected_functions()
+                
+                # Update 3D surface plot if panel is visible
+                if self.show_surface_plot.get():
+                    self.update_surface_plot(func_name)
         elif event.xdata is not None:
             # Fallback for demo data when no real function names available
             func_index = int(round(event.xdata))
@@ -941,8 +978,15 @@ class SimulationExplorerUI:
                     self.selected_functions.add(func_name)
                     print(f"Selected function: {func_name}")
                 
+                # Update the last selected function for 3D surface plot
+                self.last_selected_function = func_name
+                
                 self.update_statistics()
                 self.highlight_selected_functions()
+                
+                # Update 3D surface plot if panel is visible (for demo data, show placeholder)
+                if self.show_surface_plot.get():
+                    self.update_surface_plot(func_name)
     
     def on_chart_hover(self, event):
         """Handle mouse hover over chart to show detailed function/dataset tooltip"""
@@ -1514,6 +1558,188 @@ Use Ctrl+O to load project data and get started!"""
             self.stats_frame.grid()
         else:
             self.stats_frame.grid_remove()
+    
+    def create_surface_plot_panel(self, parent):
+        """Create the 3D surface plot panel"""
+        
+        # Configure parent for expansion
+        parent.grid_rowconfigure(0, weight=1)
+        parent.grid_columnconfigure(0, weight=1)
+        
+        # Create frame for 3D surface plot
+        self.surface_frame = ttk.LabelFrame(parent, text="3D Performance Surface", padding="5")
+        self.surface_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        self.surface_frame.grid_rowconfigure(1, weight=1)
+        self.surface_frame.grid_columnconfigure(0, weight=1)
+        
+        # Info label
+        self.surface_info_label = ttk.Label(self.surface_frame, 
+                                           text="Click on a function in the main chart to display its 3D performance surface")
+        self.surface_info_label.grid(row=0, column=0, sticky=tk.W, pady=(0, 5))
+        
+        # Create matplotlib figure for 3D plot with tighter layout
+        self.surface_fig, self.surface_ax = plt.subplots(figsize=(6, 4), subplot_kw={'projection': '3d'})
+        self.surface_fig.patch.set_facecolor('#f0f0f0')
+        
+        # Reduce whitespace around the plot
+        self.surface_fig.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.05)
+        
+        # Create canvas for 3D plot
+        self.surface_canvas = FigureCanvasTkAgg(self.surface_fig, self.surface_frame)
+        self.surface_canvas.get_tk_widget().grid(row=1, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        
+        # Initialize with empty plot
+        self.clear_surface_plot()
+        
+        # Initially hidden - but don't grid_remove since we use paned windows
+        # The panel visibility is controlled by adding/removing from paned window
+    
+    def toggle_surface_plot_panel(self):
+        """Show/hide the 3D surface plot panel"""
+        print(f"Toggle surface plot panel: {self.show_surface_plot.get()}")
+        if self.show_surface_plot.get():
+            # Add to the right vertical paned window if not already there
+            if hasattr(self, 'right_vertical_paned') and hasattr(self, 'surface_plot_panel'):
+                panes = self.right_vertical_paned.panes()
+                print(f"Current panes: {panes}")
+                if str(self.surface_plot_panel) not in panes:
+                    print("Adding surface plot panel to paned window")
+                    self.right_vertical_paned.add(self.surface_plot_panel, weight=1)
+                else:
+                    print("Surface plot panel already in paned window")
+            
+            # Update the surface plot with the last selected function if available
+            if self.last_selected_function:
+                print(f"Updating surface plot for function: {self.last_selected_function}")
+                self.update_surface_plot(self.last_selected_function)
+            else:
+                print("No function selected, clearing surface plot")
+                self.clear_surface_plot()
+        else:
+            # Remove from paned window
+            if hasattr(self, 'right_vertical_paned') and hasattr(self, 'surface_plot_panel'):
+                panes = self.right_vertical_paned.panes()
+                if str(self.surface_plot_panel) in panes:
+                    print("Removing surface plot panel from paned window")
+                    self.right_vertical_paned.remove(self.surface_plot_panel)
+    
+    def clear_surface_plot(self):
+        """Clear the 3D surface plot"""
+        print("Clearing 3D surface plot")
+        self.surface_ax.clear()
+        self.surface_ax.set_xlabel('Threads')
+        self.surface_ax.set_ylabel('Simulations') 
+        self.surface_ax.set_zlabel('Normalized Time')
+        self.surface_ax.text(0.5, 0.5, 0.5, 'Select a function to display 3D surface', 
+                            transform=self.surface_ax.transAxes, ha='center', va='center')
+        
+        # Apply tight layout to reduce whitespace
+        self.surface_fig.tight_layout(pad=0.5)
+        self.surface_canvas.draw()
+    
+    def update_surface_plot(self, function_name):
+        """Update the 3D surface plot for the selected function"""
+        
+        print(f"Update surface plot called for function: {function_name}")
+        print(f"Simulation data available: {len(self.simulation_data) if self.simulation_data else 0} datasets")
+        
+        if not self.simulation_data or not function_name:
+            print("No simulation data or function name, clearing plot")
+            self.clear_surface_plot()
+            return
+        
+        # Get baseline data for normalization
+        baseline_data = self.get_baseline_data()
+        if not baseline_data or 'functions' not in baseline_data:
+            print("No baseline data available for surface plot")
+            self.clear_surface_plot()
+            return
+        
+        baseline_functions = baseline_data['functions']
+        if function_name not in baseline_functions:
+            print(f"Function '{function_name}' not found in baseline data")
+            self.clear_surface_plot()
+            return
+        
+        baseline_time = baseline_functions[function_name]['total_time']
+        if baseline_time <= 0:
+            print(f"Baseline time for '{function_name}' is invalid: {baseline_time}")
+            self.clear_surface_plot()
+            return
+        
+        print(f"Processing surface plot for '{function_name}', baseline time: {baseline_time:.3f}s")
+        
+        # Create meshgrid for threads and simulations
+        threads = np.array(self.thread_counts)
+        sims = np.array(self.concurrent_sims)
+        T, S = np.meshgrid(threads, sims, indexing='ij')
+        print(f"Created meshgrid: T shape {T.shape}, S shape {S.shape}")
+        
+        # Initialize normalized time array with NaN (for missing data)
+        Z = np.full_like(T, np.nan, dtype=float)
+        print(f"Initialized Z array with shape: {Z.shape}")
+        
+        # Fill in available data
+        data_points = 0
+        for (thread_idx, sim_idx), data in self.simulation_data.items():
+            if 'functions' in data and function_name in data['functions']:
+                function_time = data['functions'][function_name]['total_time']
+                normalized_time = function_time / baseline_time
+                Z[thread_idx, sim_idx] = normalized_time
+                data_points += 1
+        
+        print(f"Filled {data_points} data points in Z array")
+        
+        # Clear previous plot
+        print("Clearing previous 3D plot")
+        self.surface_ax.clear()
+        
+        # Create surface plot where data is available
+        mask = ~np.isnan(Z)
+        valid_points = np.sum(mask)
+        print(f"Found {valid_points} valid data points for plotting")
+        
+        if np.any(mask):
+            try:
+                print("Attempting to create scatter plot")
+                # For scattered data points, use a different approach
+                # First, plot scatter points for all available data
+                self.surface_ax.scatter(T[mask], S[mask], Z[mask], 
+                                      color='red', s=50, alpha=0.8, label='Data Points')
+                print("Scatter plot created successfully")
+                
+                # Create a simple wireframe connecting available data points
+                # Find connected regions of data
+                if valid_points >= 4:  # Need at least 4 points for wireframe
+                    try:
+                        print("Attempting to create wireframe")
+                        # Create a simple wireframe by connecting adjacent points
+                        # This is a simplified approach without scipy
+                        wireframe = self.surface_ax.plot_wireframe(T, S, Z, alpha=0.3, color='blue')
+                        print("Wireframe created successfully")
+                    except Exception as e:
+                        print(f"Wireframe creation failed: {e}")
+            except Exception as e:
+                print(f"Error creating surface plot: {e}")
+        else:
+            print("No valid data points found for plotting")
+        
+        # Set labels and title
+        print("Setting labels and title")
+        self.surface_ax.set_xlabel('Threads')
+        self.surface_ax.set_ylabel('Simulations')
+        self.surface_ax.set_zlabel('Normalized Time')
+        self.surface_ax.set_title(f'Performance Surface: {function_name}')
+        
+        # Update info label
+        self.surface_info_label.config(text=f"3D Performance Surface for: {function_name}")
+        
+        # Apply tight layout to reduce whitespace
+        self.surface_fig.tight_layout(pad=0.5)
+        
+        print("Drawing canvas")
+        self.surface_canvas.draw()
+        print("Surface plot update completed")
     
     def select_current_column(self):
         """Select all datasets in a column (same sim count, different threads)"""
