@@ -669,9 +669,19 @@ class SimulationExplorerUI:
         self.ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
         self.ax.grid(True, alpha=0.3)
         
-        # Store function names for hover functionality
+        # Store chart data for hover functionality
         self.function_names = function_names
         self.dataset_names = [d['name'] for d in selected_datasets]
+        self.current_selected_datasets = selected_datasets
+        self.current_baseline_data = baseline_data
+        
+        # Recreate hover annotation after chart clear - simplified without arrow for better positioning control
+        self.hover_annotation = self.ax.annotate('', xy=(0,0), xytext=(30,30), 
+                                               textcoords="offset points",
+                                               bbox=dict(boxstyle="round,pad=0.5", fc="lightblue", alpha=0.95, edgecolor="darkblue", linewidth=2),
+                                               fontsize=10, fontweight='bold',
+                                               visible=False, zorder=1000,
+                                               ha='left', va='bottom')
         
         self.canvas.draw()
         
@@ -750,9 +760,20 @@ class SimulationExplorerUI:
         self.ax.legend()
         self.ax.grid(True, alpha=0.3)
         
-        # Store function names for hover functionality
+        # Store chart data for hover functionality
         self.function_names = functions
         self.dataset_names = [d['name'] for d in datasets]
+        self.current_selected_datasets = datasets  # Mock datasets
+        self.current_baseline_data = None  # No baseline for mock data
+        
+        # Recreate hover annotation after chart clear - make it more visible with smart positioning
+        self.hover_annotation = self.ax.annotate('', xy=(0,0), xytext=(30,30), 
+                                               textcoords="offset points",
+                                               bbox=dict(boxstyle="round,pad=0.5", fc="lightblue", alpha=0.95, edgecolor="darkblue", linewidth=2),
+                                               arrowprops=dict(arrowstyle="-|>", connectionstyle="arc3,rad=0.2", color="darkblue", lw=2),
+                                               fontsize=10, fontweight='bold',
+                                               visible=False, zorder=1000,
+                                               ha='left', va='bottom')
         
         self.canvas.draw()
         
@@ -909,26 +930,146 @@ class SimulationExplorerUI:
                 self.highlight_selected_functions()
     
     def on_chart_hover(self, event):
-        """Handle mouse hover over chart to show function/dataset info"""
+        """Handle mouse hover over chart to show detailed function/dataset tooltip"""
         if event.inaxes != self.ax:
-            self.hover_annotation.set_visible(False)
-            self.canvas.draw_idle()
+            if hasattr(self, 'hover_annotation'):
+                self.hover_annotation.set_visible(False)
+                self.canvas.draw_idle()
             return
         
         # Check if mouse is over a bar
         if event.xdata is not None and event.ydata is not None:
             func_index = int(round(event.xdata))
-            if 0 <= func_index < len(self.function_names):
+            if 0 <= func_index < len(getattr(self, 'function_names', [])):
                 func_name = self.function_names[func_index]
                 
-                # Determine which dataset based on y-value and overlaid bars
-                # For demo, we'll show the highest dataset at this x position
-                y_value = event.ydata
-                hover_text = f"Function: {func_name}\nRatio: {y_value:.2f}x\nDataset: Estimated"
+                # Find the closest dataset bar at this function position
+                closest_dataset = None
+                closest_distance = float('inf')
+                closest_ratio = 0
                 
-                self.hover_annotation.xy = (event.xdata, event.ydata)
+                # Get current chart data to find which bar we're hovering over
+                if hasattr(self, 'simulation_data') and self.simulation_data:
+                    # Real data mode
+                    selected_datasets = []
+                    for (row_idx, col_idx), var in self.dataset_selections.items():
+                        if var.get() and (row_idx, col_idx) in self.simulation_data:
+                            data = self.simulation_data[(row_idx, col_idx)]
+                            threads = self.thread_counts[row_idx]
+                            sims = self.concurrent_sims[col_idx]
+                            selected_datasets.append({
+                                'name': f"{sims} sim{'s' if sims > 1 else ''}, {threads} thread{'s' if threads > 1 else ''}",
+                                'data': data,
+                                'threads': threads,
+                                'sims': sims
+                            })
+                    
+                    # Get baseline data for ratio calculations
+                    baseline_data = self.get_baseline_data()
+                    if baseline_data and baseline_data.get('functions'):
+                        baseline_functions = baseline_data.get('functions', {})
+                        
+                        # Calculate ratios for each dataset at this function
+                        for dataset in selected_datasets:
+                            dataset_functions = dataset['data'].get('functions', {})
+                            if func_name in baseline_functions and func_name in dataset_functions:
+                                baseline_time = baseline_functions[func_name]['total_time']
+                                dataset_time = dataset_functions[func_name]['total_time']
+                                if baseline_time > 0:
+                                    ratio = dataset_time / baseline_time
+                                    distance = abs(ratio - event.ydata)
+                                    if distance < closest_distance:
+                                        closest_distance = distance
+                                        closest_dataset = dataset
+                                        closest_ratio = ratio
+                    
+                    # Build detailed tooltip
+                    if closest_dataset:
+                        hover_text = f"Function: {func_name}\n"
+                        hover_text += f"Dataset: {closest_dataset['name']}\n"
+                        hover_text += f"Performance Ratio: {closest_ratio:.3f}x\n"
+                        
+                        # Add baseline comparison
+                        if closest_ratio > 1.0:
+                            hover_text += f"Performance: {((closest_ratio - 1.0) * 100):.1f}% slower than baseline\n"
+                        elif closest_ratio < 1.0:
+                            hover_text += f"Performance: {((1.0 - closest_ratio) * 100):.1f}% faster than baseline\n"
+                        else:
+                            hover_text += "Performance: Same as baseline\n"
+                        
+                        # Add actual timing data if available
+                        dataset_functions = closest_dataset['data'].get('functions', {})
+                        if func_name in dataset_functions:
+                            actual_time = dataset_functions[func_name]['total_time']
+                            hover_text += f"Execution Time: {actual_time:.3f}s\n"
+                            
+                            # Add call count if available
+                            call_count = dataset_functions[func_name].get('call_count', 0)
+                            if call_count > 0:
+                                hover_text += f"Call Count: {call_count:,}\n"
+                                avg_time = actual_time / call_count
+                                hover_text += f"Avg per Call: {avg_time:.6f}s"
+                    else:
+                        hover_text = f"Function: {func_name}\nRatio: {event.ydata:.3f}x\nNo detailed data available"
+                
+                else:
+                    # Mock data mode - provide basic information
+                    hover_text = f"Function: {func_name}\n"
+                    hover_text += f"Performance Ratio: {event.ydata:.2f}x\n"
+                    if event.ydata > 1.0:
+                        hover_text += f"Performance: {((event.ydata - 1.0) * 100):.1f}% slower than baseline\n"
+                    elif event.ydata < 1.0:
+                        hover_text += f"Performance: {((1.0 - event.ydata) * 100):.1f}% faster than baseline\n"
+                    else:
+                        hover_text += "Performance: Same as baseline\n"
+                    hover_text += "Dataset: Demo Data"
+                
+                # Simple positioning: tooltip always to the side, never directly above/below cursor
+                ax_xlim = self.ax.get_xlim()
+                ax_ylim = self.ax.get_ylim()
+                ax_width = ax_xlim[1] - ax_xlim[0]
+                ax_height = ax_ylim[1] - ax_ylim[0]
+                relative_x_position = (event.xdata - ax_xlim[0]) / ax_width if ax_width > 0 else 0
+                relative_y_position = (event.ydata - ax_ylim[0]) / ax_height if ax_height > 0 else 0
+                
+                # Fixed position approach: Place tooltip in a corner of the chart, not relative to cursor
+                ax_xlim = self.ax.get_xlim()
+                ax_ylim = self.ax.get_ylim()
+                
+                # Choose a fixed location with more margin to prevent cutoff
+                if relative_x_position > 0.5 and relative_y_position > 0.5:
+                    # Mouse in top-right, put tooltip in bottom-left
+                    tooltip_x = ax_xlim[0] + (ax_xlim[1] - ax_xlim[0]) * 0.15
+                    tooltip_y = ax_ylim[0] + (ax_ylim[1] - ax_ylim[0]) * 0.15
+                    self.hover_annotation.set_ha('left')
+                    self.hover_annotation.set_va('bottom')
+                elif relative_x_position > 0.5 and relative_y_position <= 0.5:
+                    # Mouse in bottom-right, put tooltip in top-left
+                    tooltip_x = ax_xlim[0] + (ax_xlim[1] - ax_xlim[0]) * 0.15
+                    tooltip_y = ax_ylim[0] + (ax_ylim[1] - ax_ylim[0]) * 0.85
+                    self.hover_annotation.set_ha('left')
+                    self.hover_annotation.set_va('top')
+                elif relative_x_position <= 0.5 and relative_y_position > 0.5:
+                    # Mouse in top-left, put tooltip in bottom-right
+                    tooltip_x = ax_xlim[0] + (ax_xlim[1] - ax_xlim[0]) * 0.85
+                    tooltip_y = ax_ylim[0] + (ax_ylim[1] - ax_ylim[0]) * 0.15
+                    self.hover_annotation.set_ha('right')
+                    self.hover_annotation.set_va('bottom')
+                else:
+                    # Mouse in bottom-left, put tooltip in top-right
+                    tooltip_x = ax_xlim[0] + (ax_xlim[1] - ax_xlim[0]) * 0.85
+                    tooltip_y = ax_ylim[0] + (ax_ylim[1] - ax_ylim[0]) * 0.85
+                    self.hover_annotation.set_ha('right')
+                    self.hover_annotation.set_va('top')
+                
+                # Position tooltip at fixed location in data coordinates
+                self.hover_annotation.xy = (tooltip_x, tooltip_y)
+                self.hover_annotation.xytext = (0, 0)  # No offset needed
                 self.hover_annotation.set_text(hover_text)
                 self.hover_annotation.set_visible(True)
+                
+
+                
                 self.canvas.draw_idle()
             else:
                 self.hover_annotation.set_visible(False)
