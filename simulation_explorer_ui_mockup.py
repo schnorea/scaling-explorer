@@ -41,6 +41,7 @@ class SimulationExplorerUI:
         # Data storage
         self.project_data = None  # Will store loaded project JSON
         self.simulation_data = {}  # Will store all loaded simulation data {(row,col): data}
+        self.available_datasets = set()  # Track which datasets are available
         self.current_project_path = None
         
         self.setup_ui()
@@ -428,6 +429,11 @@ class SimulationExplorerUI:
         self.row_baseline_radios = []
         self.single_baseline_radios = []
         
+        # Store widgets for enabling/disabling based on available data
+        self.dataset_checkboxes = {}
+        self.dataset_time_labels = {}
+        self.dataset_radio_buttons = {}
+        
         for row_idx, threads in enumerate(self.thread_counts):
             table_row = row_idx + 2  # Start after header rows (0 and 1)
             
@@ -454,6 +460,9 @@ class SimulationExplorerUI:
                                      background='black', relief='solid', borderwidth=1)
                 time_label.grid(row=table_row, column=start_col, sticky=(tk.W, tk.E, tk.N, tk.S))
                 
+                # Store reference to time label for later updates
+                self.dataset_time_labels[(row_idx, sim_idx)] = time_label
+                
                 # Column 2: Dataset checkbox
                 var = tk.BooleanVar()
                 self.dataset_selections[(row_idx, sim_idx)] = var
@@ -462,6 +471,9 @@ class SimulationExplorerUI:
                 cb = ttk.Checkbutton(cb_frame, variable=var,
                                    command=lambda r=row_idx, c=sim_idx: self.on_selection_change(r, c))
                 cb.pack(anchor=tk.CENTER)
+                
+                # Store reference to checkbox for later enabling/disabling
+                self.dataset_checkboxes[(row_idx, sim_idx)] = cb
                 
                 # Column 3: Single baseline radio button
                 radio_value = f"{row_idx}_{sim_idx}"
@@ -473,6 +485,9 @@ class SimulationExplorerUI:
                                           command=lambda r=row_idx, c=sim_idx: self.on_single_baseline_change(r, c))
                 rb_single.pack(anchor=tk.CENTER)
                 self.single_baseline_radios.append(rb_single)
+                
+                # Store reference to radio button for later enabling/disabling
+                self.dataset_radio_buttons[(row_idx, sim_idx)] = rb_single
         
         # Set initial visibility based on default mode
         self.update_radio_visibility()
@@ -1603,6 +1618,7 @@ Use Ctrl+O to load project data and get started!"""
             
             # Load all simulation data files
             self.simulation_data = {}
+            self.available_datasets = set()  # Track which datasets are available
             missing_files = []
             
             for sim_count, thread_data in self.project_data['datasets'].items():
@@ -1610,17 +1626,18 @@ Use Ctrl+O to load project data and get started!"""
                     # Construct full path
                     file_path = os.path.join(project_dir, filename)
                     
+                    # Map to matrix coordinates
+                    sim_idx = self.get_sim_index(sim_count)
+                    thread_idx = self.get_thread_index(thread_count)
+                    
                     if os.path.exists(file_path):
                         try:
                             with open(file_path, 'r') as f:
                                 data = json.load(f)
                             
-                            # Map to matrix coordinates
-                            sim_idx = self.get_sim_index(sim_count)
-                            thread_idx = self.get_thread_index(thread_count)
-                            
                             if sim_idx is not None and thread_idx is not None:
                                 self.simulation_data[(thread_idx, sim_idx)] = data
+                                self.available_datasets.add((thread_idx, sim_idx))
                         
                         except json.JSONDecodeError as e:
                             messagebox.showerror("Error", f"Invalid JSON in {filename}: {e}")
@@ -1633,8 +1650,9 @@ Use Ctrl+O to load project data and get started!"""
                     f"Some data files not found:\n" + "\n".join(missing_files[:10]) + 
                     (f"\n... and {len(missing_files) - 10} more" if len(missing_files) > 10 else ""))
             
-            # Update the UI with real data
+            # Update the UI with real data and handle missing datasets
             self.update_table_with_real_data()
+            self.disable_missing_datasets()
             self.update_status()
             
             # Show success message
@@ -1662,6 +1680,53 @@ Use Ctrl+O to load project data and get started!"""
         }
         return thread_map.get(thread_key)
     
+    def disable_missing_datasets(self):
+        """Disable controls and clear labels for datasets not available in the loaded project"""
+        
+        if not hasattr(self, 'available_datasets'):
+            return
+        
+        print(f"Disabling missing datasets. Available: {len(self.available_datasets)} out of {len(self.thread_counts) * len(self.concurrent_sims)} total")
+        
+        # Check all possible dataset combinations
+        for row_idx in range(len(self.thread_counts)):
+            for sim_idx in range(len(self.concurrent_sims)):
+                dataset_key = (row_idx, sim_idx)
+                
+                if dataset_key not in self.available_datasets:
+                    # Dataset is missing - disable controls and clear labels
+                    
+                    # Clear and disable time label
+                    if dataset_key in self.dataset_time_labels:
+                        time_label = self.dataset_time_labels[dataset_key]
+                        time_label.config(text="--", foreground='gray', background='lightgray')
+                    
+                    # Disable checkbox
+                    if dataset_key in self.dataset_checkboxes:
+                        checkbox = self.dataset_checkboxes[dataset_key]
+                        checkbox.config(state='disabled')
+                        # Ensure it's unchecked
+                        if dataset_key in self.dataset_selections:
+                            self.dataset_selections[dataset_key].set(False)
+                    
+                    # Disable radio button
+                    if dataset_key in self.dataset_radio_buttons:
+                        radio_button = self.dataset_radio_buttons[dataset_key]
+                        radio_button.config(state='disabled')
+                    
+                    threads = self.thread_counts[row_idx]
+                    sims = self.concurrent_sims[sim_idx]
+                    print(f"Disabled missing dataset: {threads} threads, {sims} sims")
+                else:
+                    # Dataset is available - ensure controls are enabled
+                    if dataset_key in self.dataset_checkboxes:
+                        checkbox = self.dataset_checkboxes[dataset_key]
+                        checkbox.config(state='normal')
+                    
+                    if dataset_key in self.dataset_radio_buttons:
+                        radio_button = self.dataset_radio_buttons[dataset_key]
+                        radio_button.config(state='normal')
+    
     def update_table_with_real_data(self):
         """Update the table display with real execution times from loaded data"""
         
@@ -1672,27 +1737,16 @@ Use Ctrl+O to load project data and get started!"""
         
         # Update time labels in the table
         for (thread_idx, sim_idx), data in self.simulation_data.items():
-            if hasattr(self, 'table_frame'):
-                # Find the time label for this position
-                table_row = thread_idx + 2  # Account for header rows
-                start_col = 1 + (sim_idx * 3)  # Time column
-                
-                # Get real execution time from data
-                total_time = data.get('metadata', {}).get('total_simulation_time', 0)
-                
-                # Find and update the time label
-                updated = False
-                for widget in self.table_frame.grid_slaves():
-                    info = widget.grid_info()
-                    if info['row'] == table_row and info['column'] == start_col:
-                        if isinstance(widget, ttk.Label):
-                            # Update with real time and visual indicator
-                            widget.config(text=f"{total_time:.1f}s", foreground='lime', background='darkgreen')
-                            updated = True
-                            break
-                
-                if updated:
-                    print(f"Updated cell ({thread_idx}, {sim_idx}) with real time: {total_time:.1f}s")
+            # Get real execution time from data
+            total_time = data.get('metadata', {}).get('total_simulation_time', 0)
+            
+            # Update the stored time label reference if available
+            dataset_key = (thread_idx, sim_idx)
+            if dataset_key in self.dataset_time_labels:
+                time_label = self.dataset_time_labels[dataset_key]
+                # Update with real time and visual indicator
+                time_label.config(text=f"{total_time:.1f}s", foreground='lime', background='darkgreen')
+                print(f"Updated cell ({thread_idx}, {sim_idx}) with real time: {total_time:.1f}s")
         
         # Force a chart update to use real data
         self.update_chart()

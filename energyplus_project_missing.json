@@ -19,10 +19,6 @@
     },
     "2_sims": {
       "1_thread": "energyplus_concurrent_02sims_01threads.json",
-      "2_threads": "energyplus_concurrent_02sims_02threads.json",
-      "4_threads": "energyplus_concurrent_02sims_04threads.json",
-      "8_threads": "energyplus_concurrent_02sims_08threads.json",
-      "16_threads": "energyplus_concurrent_02sims_16threads.json",
       "32_threads": "energyplus_concurrent_02sims_32threads.json"
     },
     "4_sims": {
@@ -66,7 +62,7 @@
       "32_threads": "energyplus_concurrent_64sims_32threads.json"
     }
   },
-  "matrix_layout_junk": {
+  "matrix_layout": {
     "rows": ["1_sim", "2_sims", "4_sims", "8_sims", "16_sims", "32_sims", "64_sims"],
     "columns": ["1_thread", "2_threads", "4_threads", "8_threads", "16_threads", "32_threads"]
   },
